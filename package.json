@@ -1,12 +1,27 @@
 {
   "name": "yakin.etu.edu.tr_project",
   "version": "1.0.0",
-  "description": "481 proje web sitesi ve uygulama reposu\r kullanılacak databasenin kodu eklenmiş durumda;",
+  "description": "yakin.etu.edu.tr web sitesi",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon src/index.js",
+    "test": "test"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CNrg32/yakin.etu.edu.tr_project.git"
+  },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CNrg32/yakin.etu.edu.tr_project/issues"
+  },
+  "homepage": "https://github.com/CNrg32/yakin.etu.edu.tr_project#readme",
+  "dependencies": {
+    "express": "^4.21.1",
+    "yakin.etu.edu.tr_project": "file:"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
 }
