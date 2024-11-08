@@ -1,4 +1,4 @@
-const CafeteriaMenu = require('../models/cafeteria_menu.model');
+const CafeteriaMenu = require('../models/Cafeteria_Menu.model');
 
 exports.create = (req, res) => {
     if (!req.body) {
