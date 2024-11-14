@@ -1,4 +1,4 @@
-const Friend = require('../models/friend.model');
+const Friend = require('../models/friends.model');
 
 exports.create = (req, res) => {
     if (!req.body) {

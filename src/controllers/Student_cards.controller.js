@@ -1,4 +1,4 @@
-const StudentCard = require('../models/student_card.model');
+const StudentCard = require('../models/student_cards.model');
 
 exports.create = (req, res) => {
     if (!req.body) {

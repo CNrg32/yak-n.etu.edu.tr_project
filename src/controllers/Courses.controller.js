@@ -1,4 +1,4 @@
-const Course = require('../models/course.model');
+const Course = require('../models/courses.model');
 
 exports.create = (req, res) => {
     if (!req.body) {

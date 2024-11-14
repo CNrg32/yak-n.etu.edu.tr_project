@@ -1,8 +1,8 @@
 const sql = require('../config/db_config');
 
 const Classroom = function (classroom) {
-    this.classroom_name = classroom.classroom_name;
-    this.capacity = classroom.capacity;
+    this.classroom_name = classroom.classroom_name; // Corrected to match the controller
+    this.capacity = classroom.capacity; // Corrected to match the controller
 };
 
 Classroom.create = (newClassroom, result) => {

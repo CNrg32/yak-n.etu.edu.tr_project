@@ -1,4 +1,4 @@
-const Classroom = require('../models/classroom.model');
+const Classroom = require('../models/classrooms.model');
 
 exports.create = (req, res) => {
     if (!req.body) {
@@ -6,8 +6,8 @@ exports.create = (req, res) => {
     }
 
     const classroom = new Classroom({
-        room_name: req.body.room_name,
-        is_empty: req.body.is_empty
+        classroom_name: req.body.classroom_name, // Corrected to match the model
+        capacity: req.body.capacity // Corrected to match the model
     });
 
     Classroom.create(classroom, (err, data) => {

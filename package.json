@@ -2,10 +2,11 @@
   "name": "yakin.etu.edu.tr_project",
   "version": "1.0.0",
   "description": "yakin.etu.edu.tr web sitesi",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "test": "test"
+    "start": "node ./src/index.js",
+    "start:dev": "nodemon ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -18,8 +19,10 @@
   },
   "homepage": "https://github.com/CNrg32/yakin.etu.edu.tr_project#readme",
   "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "express": "^4.21.1",
-    "yakin.etu.edu.tr_project": "file:"
+    "mysql": "^2.18.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
