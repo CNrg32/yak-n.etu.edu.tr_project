@@ -10,3 +10,5 @@ ctrl c ile çıkaabiliyosunuz
 src/routes: API yolları
 src/controllers: İşlevsel işlevleri barındıran dosyalar
 src/models: Veritabanı modeller
+//eger authentication saglanamazsa MySQL workbench'e yandaki command'i gir -> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'user_şifreniz';
+//configde autharization sağlanmazsa
