@@ -1,0 +1,85 @@
+.daily-menu-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.daily-menu-container h1 {
+    text-align: left;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.daily-menu-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 20px;
+}
+
+.daily-menu-table th,
+.daily-menu-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+.daily-menu-table th {
+    background-color: #f0f0f0;
+}
+
+.meal-time-cell {
+    font-weight: bold;
+    background-color: #fafafa;
+    width: 100px;
+}
+
+.menu-cell {
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.menu-item {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Diagonal 'Meal Time' text in the top-left cell */
+.diagonal-text {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+}
+
+.diagonal-text::after {
+    content: 'Meal Time';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    transform-origin: center;
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+/* Color classes for menu cells */
+.color-0 {
+    background-color: #d1e7ff;
+}
+
+.color-1 {
+    background-color: #ffe7d1;
+}
+
+.color-2 {
+    background-color: #e7d1ff;
+}
+
+.color-3 {
+    background-color: #d1ffe7;
+}
+
+.color-4 {
+    background-color: #ffd1d1;
+}

@@ -1,14 +1,13 @@
-// src/config/dbConfig.js
 const mysql = require('mysql');
-//buraya herkes oluşturduğu database user adı,şifresi,database ismini girsin;
-const db = mysql.createConnection({
-    host: 'localhost',
+
+const connection = mysql.createConnection({
+    host: '127.0.0.1',
     user: 'root',
-    password: '',
-    database: 'SchoolManagement'
+    password: '1234', // MySQL root kullanıcınızın şifresini buraya girin
+    database: 'schoolmanagement'
 });
 
-db.connect((err) => {
+connection.connect((err) => {
     if (err) {
         console.error('Error connecting to the database:', err);
         return;
@@ -16,4 +15,4 @@ db.connect((err) => {
     console.log('Connected to the database');
 });
 
-module.exports = db;
+module.exports = connection;

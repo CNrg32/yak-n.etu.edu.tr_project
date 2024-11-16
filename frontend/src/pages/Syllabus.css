@@ -1,0 +1,69 @@
+.syllabus-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.syllabus-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.syllabus-header h1 {
+    margin: 0;
+    color: #333;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.action-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.remove-lesson {
+    background-color: #ff4d4f;
+    color: #fff;
+}
+
+.add-lesson {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.syllabus-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 20px;
+}
+
+.syllabus-table th, .syllabus-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+.time-cell {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.lesson-cell {
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.color-0 { background-color: #d1e7ff; }
+.color-1 { background-color: #ffe7d1; }
+.color-2 { background-color: #e7d1ff; }
+.color-3 { background-color: #d1ffe7; }
+.color-4 { background-color: #ffd1d1; }

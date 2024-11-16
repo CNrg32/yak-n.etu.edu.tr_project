@@ -1,0 +1,57 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa; /* Hafif gri arka plan */
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff; /* Beyaz kutu arka planı */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+  border-radius: 8px; /* Köşeleri yuvarla */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 1em;
+  text-align: left;
+}
+
+.table th, .table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd; /* İnce gri çizgiler */
+}
+
+.table th {
+  background-color: #f1f1f1; /* Başlık hücre arka planı */
+  color: #333;
+  font-weight: bold;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* Alternatif satır renklendirme */
+}
+
+.remove-btn {
+  background-color: #ff4d4d; /* Kırmızı buton */
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background-color: #e60000; /* Kırmızı buton hover durumu */
+}
