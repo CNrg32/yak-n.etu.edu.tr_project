@@ -28,12 +28,6 @@
     background-color: #f0f0f0;
 }
 
-.meal-time-cell {
-    font-weight: bold;
-    background-color: #fafafa;
-    width: 100px;
-}
-
 .menu-cell {
     border-radius: 8px;
     padding: 10px;
@@ -44,42 +38,23 @@
     color: #333;
 }
 
-/* Diagonal 'Meal Time' text in the top-left cell */
-.diagonal-text {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    padding: 0;
-}
-
-.diagonal-text::after {
-    content: 'Meal Time';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    transform-origin: center;
-    white-space: nowrap;
-    font-weight: bold;
-}
-
 /* Color classes for menu cells */
 .color-0 {
-    background-color: #d1e7ff;
+    background-color: #d1e7ff; /* Light blue */
 }
 
 .color-1 {
-    background-color: #ffe7d1;
+    background-color: #ffe7d1; /* Light orange */
 }
 
 .color-2 {
-    background-color: #e7d1ff;
+    background-color: #e7d1ff; /* Light purple */
 }
 
 .color-3 {
-    background-color: #d1ffe7;
+    background-color: #d1ffe7; /* Light green */
 }
 
 .color-4 {
-    background-color: #ffd1d1;
+    background-color: #ffd1d1; /* Light red */
 }
