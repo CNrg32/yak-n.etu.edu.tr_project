@@ -40,3 +40,6 @@ require('./routes/Users.routes')(app);
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
+const studentCardRoutes = require('./routes/Student_Cards.routes');
+studentCardRoutes(app);
+

@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Syllabus from './pages/Syllabus';
 import DailyMenu from './pages/DailyMenu';
 import EmptyClassrooms from './pages/EmptyClassrooms';
+import ValidatePaymentMethod from './pages/ValidatePaymentMethod';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/enrollments" element={<Enrollments />} />
                     <Route path="/manage-friends" element={<ManageFriends />} />
                     <Route path="/student-cards" element={<StudentCards />} />
+                  <Route path="/student-cards/validate-payment-method" element={<ValidatePaymentMethod />} />
                     <Route path="/users" element={<Users />} />
                     <Route path="*" element={<h1>404 - Page Not Found</h1>} />
                 </Routes>
