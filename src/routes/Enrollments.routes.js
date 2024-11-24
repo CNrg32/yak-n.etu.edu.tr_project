@@ -1,9 +1,18 @@
 module.exports = app => {
-    const enrollments = require('../controllers/Enrollments.controller');
+    const enrollments = require('../controllers/enrollments.controller');
 
-   // app.post('/enrollments', enrollments.create);                // Yeni bir kayıt oluştur
-   // app.get('/enrollments', enrollments.findAll);                // Tüm kayıtları getir
-   // app.get('/enrollments/:enrollmentId', enrollments.findOne);  // ID ile tek bir kaydı getir
-   // app.put('/enrollments/:enrollmentId', enrollments.update);   // ID ile kaydı güncelle
-   // app.delete('/enrollments/:enrollmentId', enrollments.delete); // ID ile kaydı sil
+    // Create a new enrollment
+    app.post('/enrollments', enrollments.create);
+
+    // Get all enrollments
+    app.get('/enrollments', enrollments.findAll);
+
+    // Get a single enrollment by ID
+    app.get('/enrollments/:enrollmentId', enrollments.findOne);
+
+    // Update an enrollment by ID
+    app.put('/enrollments/:enrollmentId', enrollments.update);
+
+    // Delete an enrollment by ID
+    app.delete('/enrollments/:enrollmentId', enrollments.delete);
 };

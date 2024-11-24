@@ -6,9 +6,9 @@ const Enrollment = function (enrollment) {
 };
 
 Enrollment.create = (newEnrollment, result) => {
-    sql.query("INSERT INTO Enrollments SET ?", newEnrollment, (err, res) => {
+    sql.query('INSERT INTO Enrollments SET ?', newEnrollment, (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.log('Error: ', err);
             result(err, null);
             return;
         }
@@ -16,10 +16,10 @@ Enrollment.create = (newEnrollment, result) => {
     });
 };
 
-Enrollment.getAll = (result) => {
-    sql.query("SELECT * FROM Enrollments", (err, res) => {
+Enrollment.getAll = result => {
+    sql.query('SELECT * FROM Enrollments', (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.log('Error: ', err);
             result(null, err);
             return;
         }
@@ -28,9 +28,9 @@ Enrollment.getAll = (result) => {
 };
 
 Enrollment.findById = (id, result) => {
-    sql.query("SELECT * FROM Enrollments WHERE enrollment_id = ?", [id], (err, res) => {
+    sql.query('SELECT * FROM Enrollments WHERE enrollment_id = ?', [id], (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.log('Error: ', err);
             result(err, null);
             return;
         }
@@ -38,22 +38,22 @@ Enrollment.findById = (id, result) => {
             result(null, res[0]);
             return;
         }
-        result({ kind: "not_found" }, null);
+        result({ kind: 'not_found' }, null);
     });
 };
 
 Enrollment.updateById = (id, enrollment, result) => {
     sql.query(
-        "UPDATE Enrollments SET user_id = ?, course_id = ? WHERE enrollment_id = ?",
+        'UPDATE Enrollments SET user_id = ?, course_id = ? WHERE enrollment_id = ?',
         [enrollment.user_id, enrollment.course_id, id],
         (err, res) => {
             if (err) {
-                console.log("error: ", err);
+                console.log('Error: ', err);
                 result(err, null);
                 return;
             }
-            if (res.affectedRows == 0) {
-                result({ kind: "not_found" }, null);
+            if (res.affectedRows === 0) {
+                result({ kind: 'not_found' }, null);
                 return;
             }
             result(null, { id: id, ...enrollment });
@@ -62,14 +62,14 @@ Enrollment.updateById = (id, enrollment, result) => {
 };
 
 Enrollment.remove = (id, result) => {
-    sql.query("DELETE FROM Enrollments WHERE enrollment_id = ?", [id], (err, res) => {
+    sql.query('DELETE FROM Enrollments WHERE enrollment_id = ?', [id], (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.log('Error: ', err);
             result(err, null);
             return;
         }
-        if (res.affectedRows == 0) {
-            result({ kind: "not_found" }, null);
+        if (res.affectedRows === 0) {
+            result({ kind: 'not_found' }, null);
             return;
         }
         result(null, res);

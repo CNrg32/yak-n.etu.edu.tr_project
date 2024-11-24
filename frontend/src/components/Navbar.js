@@ -15,8 +15,8 @@ const Navbar = () => {
                 <li><Link to="/">Home</Link></li>
                 <li><Link to="/daily-menu">Daily Menu</Link></li>
                 <li><Link to="/empty-classrooms">Empty Classrooms</Link></li>
-                <li><Link to="/courses">Courses</Link></li>
-                <li><Link to="/enrollments">Enrollments</Link></li>
+                {/* <li><Link to="/courses">Courses</Link></li> */}
+                <li><Link to="/enrollments">Syllabus</Link></li>
                 <li><Link to="/manage-friends">Manage Friends</Link></li>
                 <li><Link to="/student-cards">Student Cards</Link></li>
                 <li><Link to="/users">Users</Link></li>
