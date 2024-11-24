@@ -8,7 +8,7 @@ const Enrollments = () => {
     const [error, setError] = useState(null);
 
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    const timeSlots = ['08.00', '10.00', '12.00', '14.00', '16.00']; // Time slots
+    const timeSlots = ['08:00', '10:00', '12:00', '14:00', '16:00']; // Time slots
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,14 +36,16 @@ const Enrollments = () => {
                     lessons: days.reduce((acc, day) => ({ ...acc, [day]: '' }), {})
                 }));
 
-                // Assign courses to schedule based on their days
+                // Assign courses to schedule based on their days and times
                 courses.forEach(course => {
                     const courseDays = course.days.split(','); // Split the days into an array
-                    courseDays.forEach(day => {
-                        const timeIndex = Math.floor(Math.random() * timeSlots.length); // Random time slot for demo
-                        const row = blankSchedule[timeIndex];
-                        if (row) {
-                            row.lessons[day] = course.course_name;
+                    const courseTimes = course.times.split(','); // Split the times into an array
+
+                    courseDays.forEach((day, index) => {
+                        const time = courseTimes[index]; // Match day and time
+                        const rowIndex = timeSlots.indexOf(time); // Find the row index for the time slot
+                        if (rowIndex !== -1) {
+                            blankSchedule[rowIndex].lessons[day] = course.course_name;
                         }
                     });
                 });
@@ -71,7 +73,7 @@ const Enrollments = () => {
     return (
         <div className="syllabus-container">
             <div className="syllabus-header">
-                <h1>User 1's Weekly Schedule</h1>
+                <h1>Syllabus</h1>
             </div>
             <table className="syllabus-table">
                 <thead>

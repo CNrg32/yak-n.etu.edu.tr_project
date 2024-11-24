@@ -1,0 +1,203 @@
+/* General Page Styling */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f8fafc; /* Softer background */
+    color: #333; /* Darker text for readability */
+    line-height: 1.6;
+}
+
+.home-container {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Header Styling */
+.header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.header h1 {
+    font-size: 36px;
+    color: #2c3e50;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.header h1::after {
+    content: '';
+    display: block;
+    margin: 10px auto;
+    width: 60px;
+    height: 4px;
+    background-color: #1abc9c; /* Accent color */
+    border-radius: 2px;
+}
+
+/* Info Cards Section */
+.info-cards {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.info-card {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 25px 35px;
+    text-align: center;
+    width: 250px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.info-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.info-card-icon {
+    font-size: 40px;
+    color: #1abc9c;
+    margin-bottom: 15px;
+}
+
+.info-card h3 {
+    font-size: 20px;
+    color: #34495e;
+    margin-bottom: 10px;
+}
+
+.info-card p {
+    font-size: 30px;
+    color: #3498db;
+    font-weight: bold;
+}
+
+.info-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0 0;
+    text-align: left;
+    color: #555;
+}
+
+.info-card ul li {
+    font-size: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Quick Actions Section */
+.quick-actions {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.quick-actions h3 {
+    font-size: 26px;
+    color: #2c3e50;
+    margin-bottom: 25px;
+}
+
+.actions-grid {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.action-button {
+    padding: 15px 45px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.action-button:hover {
+    background-color: #1e88e5;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.action-button:active {
+    background-color: #1565c0;
+    transform: scale(0.97);
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 40px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 18px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    color: #34495e;
+}
+
+table th {
+    background-color: #f9f9f9;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+table td {
+    font-size: 16px;
+    color: #555;
+}
+
+table tr:hover td {
+    background-color: #f1f7ff;
+}
+
+table td:first-child, table th:first-child {
+    text-align: left;
+    padding-left: 20px;
+}
+
+table td:last-child, table th:last-child {
+    text-align: right;
+    padding-right: 20px;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .info-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-card {
+        width: 90%;
+    }
+
+    .actions-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    table th, table td {
+        padding: 12px;
+    }
+}

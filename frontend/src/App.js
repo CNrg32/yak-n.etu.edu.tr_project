@@ -19,7 +19,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/courses" element={<Courses />} />
-                    <Route path="/syllabus" element={<Syllabus />} />
+                    {/* <Route path="/syllabus" element={<Syllabus />} /> */}
                     <Route path="/daily-menu" element={<DailyMenu />} />
                     <Route path="/empty-classrooms" element={<EmptyClassrooms />} />
                     <Route path="/enrollments" element={<Enrollments />} />
