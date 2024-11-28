@@ -7,17 +7,40 @@ const User = function (user) {
     this.contact_details = user.contact_details;
 };
 
+// Create a new user
 User.create = (newUser, result) => {
+    // Log the newUser object before insertion
+    console.log('New User to Insert:', newUser);
+
     sql.query("INSERT INTO Users SET ?", newUser, (err, res) => {
+        if (err) {
+            console.error('SQL Error:', err);
+            result(err, null);
+            return;
+        }
+        console.log('User Inserted:', { id: res.insertId, ...newUser });
+        result(null, { id: res.insertId, ...newUser });
+    });
+};
+
+
+// Find a user by email
+User.findByEmail = (email, result) => {
+    sql.query("SELECT * FROM Users WHERE email = ?", [email], (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
             return;
         }
-        result(null, { id: res.insertId, ...newUser });
+        if (res.length) {
+            result(null, res[0]); // Return the found user
+            return;
+        }
+        result(null, null); // No user found
     });
 };
 
+// Get all users
 User.getAll = (result) => {
     sql.query("SELECT * FROM Users", (err, res) => {
         if (err) {
@@ -29,6 +52,7 @@ User.getAll = (result) => {
     });
 };
 
+// Find a user by ID
 User.findById = (id, result) => {
     sql.query("SELECT * FROM Users WHERE user_id = ?", [id], (err, res) => {
         if (err) {
@@ -44,6 +68,7 @@ User.findById = (id, result) => {
     });
 };
 
+// Update a user by ID
 User.updateById = (id, user, result) => {
     sql.query(
         "UPDATE Users SET email = ?, password_hash = ?, name = ?, contact_details = ? WHERE user_id = ?",
@@ -63,6 +88,7 @@ User.updateById = (id, user, result) => {
     );
 };
 
+// Delete a user by ID
 User.remove = (id, result) => {
     sql.query("DELETE FROM Users WHERE user_id = ?", [id], (err, res) => {
         if (err) {
