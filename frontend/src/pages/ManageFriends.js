@@ -1,38 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
 
 const ManageFriends = () => {
     const [friends, setFriends] = useState([]);
+    const userId = 1; // Replace with logged-in user's ID
 
     useEffect(() => {
-        const fetchFriends = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/friends`);
-                setFriends(response.data);
-            } catch (error) {
-                console.error('Error fetching friends:', error);
-            }
-        };
-        fetchFriends();
+        // Fetch friends from the API
+        fetch(`http://localhost:3001/friends/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Fetched friends data:", data); // Debug log
+                setFriends(data);
+            })
+            .catch(error => console.error("Error fetching friends:", error));
     }, []);
 
     return (
         <div>
-            <h1>Manage Friends</h1>
+            <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Manage Friends</h1>
             <table>
                 <thead>
                     <tr>
-                        <th>User ID</th>
-                        <th>Friend User ID</th>
+                        <th>Friend Name</th>
+                        <th>Email</th>
+                        <th>Balance</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {friends.map(friend => (
-                        <tr key={friend.friend_id}>
-                            <td>{friend.user_id}</td>
-                            <td>{friend.friend_user_id}</td>
+                    {friends.length > 0 ? (
+                        friends.map(friend => (
+                            <tr key={friend.friendId}>
+                                <td>{friend.friendName}</td>
+                                <td>{friend.friendEmail}</td>
+                                <td>{friend.friendBalance} ₺</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="3" style={{ textAlign: "center" }}>No friends found.</td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
         </div>

@@ -80,7 +80,7 @@ const ValidatePaymentMethod = () => {
                     >
                         <FaCreditCard style={{ marginRight: '8px' }} /> Card
                     </button>
-                    <button
+                    {/* <button
                         type="button"
                         className={`payment-option ${activePayment === 'EPS' ? 'active' : ''}`}
                         onClick={() => handlePaymentSelect('EPS')}
@@ -93,7 +93,7 @@ const ValidatePaymentMethod = () => {
                         onClick={() => handlePaymentSelect('Giropay')}
                     >
                         Giropay
-                    </button>
+                    </button> */}
                 </div>
                 {activePayment === 'Card' && (
                     <>
