@@ -19,10 +19,12 @@
   },
   "homepage": "https://github.com/CNrg32/yakin.etu.edu.tr_project#readme",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "yakin.etu.edu.tr_project": "file:"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
