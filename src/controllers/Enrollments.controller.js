@@ -1,11 +1,9 @@
 const Enrollment = require('../models/enrollments.model');
 
-// Yeni bir kayıt (enrollment) oluştur
+// Create a new enrollment
 exports.create = (req, res) => {
     if (!req.body) {
-        res.status(400).send({
-            message: "İçerik boş olamaz!"
-        });
+        res.status(400).send({ message: 'Content cannot be empty!' });
         return;
     }
 
@@ -15,83 +13,91 @@ exports.create = (req, res) => {
     });
 
     Enrollment.create(enrollment, (err, data) => {
-        if (err)
+        if (err) {
             res.status(500).send({
-                message: err.message || "Yeni kayıt oluşturulurken bir hata oluştu."
+                message: err.message || 'Some error occurred while creating the enrollment.'
             });
-        else res.send(data);
+        } else {
+            res.send(data);
+        }
     });
 };
 
-// Tüm kayıtları getir
+// Get all enrollments
 exports.findAll = (req, res) => {
     Enrollment.getAll((err, data) => {
-        if (err)
+        if (err) {
             res.status(500).send({
-                message: err.message || "Kayıtları alırken bir hata oluştu."
+                message: err.message || 'Some error occurred while retrieving enrollments.'
             });
-        else res.send(data);
+        } else {
+            res.send(data);
+        }
     });
 };
 
-// ID ile tek bir kaydı bul
+// Get a single enrollment by ID
 exports.findOne = (req, res) => {
-    Enrollment.findById(req.params.id, (err, data) => {
+    Enrollment.findById(req.params.enrollmentId, (err, data) => {
         if (err) {
-            if (err.kind === "not_found") {
+            if (err.kind === 'not_found') {
                 res.status(404).send({
-                    message: `ID'si ${req.params.id} olan kayıt bulunamadı.`
+                    message: `Enrollment with ID ${req.params.enrollmentId} not found.`
                 });
             } else {
                 res.status(500).send({
-                    message: `ID'si ${req.params.id} olan kaydı alırken hata oluştu.`
+                    message: `Error retrieving enrollment with ID ${req.params.enrollmentId}.`
                 });
             }
-        } else res.send(data);
+        } else {
+            res.send(data);
+        }
     });
 };
 
-// ID ile bir kaydı güncelle
+// Update an enrollment by ID
 exports.update = (req, res) => {
     if (!req.body) {
-        res.status(400).send({
-            message: "İçerik boş olamaz!"
-        });
+        res.status(400).send({ message: 'Content cannot be empty!' });
         return;
     }
 
     Enrollment.updateById(
-        req.params.id,
+        req.params.enrollmentId,
         new Enrollment(req.body),
         (err, data) => {
             if (err) {
-                if (err.kind === "not_found") {
+                if (err.kind === 'not_found') {
                     res.status(404).send({
-                        message: `ID'si ${req.params.id} olan kayıt bulunamadı.`
+                        message: `Enrollment with ID ${req.params.enrollmentId} not found.`
                     });
                 } else {
                     res.status(500).send({
-                        message: `ID'si ${req.params.id} olan kaydı güncellerken hata oluştu.`
+                        message: `Error updating enrollment with ID ${req.params.enrollmentId}.`
                     });
                 }
-            } else res.send(data);
+            } else {
+                res.send(data);
+            }
         }
     );
 };
 
-// ID ile bir kaydı sil
+// Delete an enrollment by ID
 exports.delete = (req, res) => {
-    Enrollment.remove(req.params.id, (err, data) => {
+    Enrollment.remove(req.params.enrollmentId, (err, data) => {
         if (err) {
-            if (err.kind === "not_found") {
+            if (err.kind === 'not_found') {
                 res.status(404).send({
-                    message: `ID'si ${req.params.id} olan kayıt bulunamadı.`
+                    message: `Enrollment with ID ${req.params.enrollmentId} not found.`
                 });
             } else {
                 res.status(500).send({
-                    message: `ID'si ${req.params.id} olan kaydı silerken hata oluştu.`
+                    message: `Could not delete enrollment with ID ${req.params.enrollmentId}.`
                 });
             }
-        } else res.send({ message: "Kayıt başarıyla silindi!" });
+        } else {
+            res.send({ message: 'Enrollment was deleted successfully!' });
+        }
     });
 };

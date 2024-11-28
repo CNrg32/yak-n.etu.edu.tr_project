@@ -1,23 +1,52 @@
+
+
+const bcrypt = require('bcrypt');
 const User = require('../models/users.model');
 
-exports.create = (req, res) => {
-    if (!req.body) {
-        res.status(400).send({ message: "Content can not be empty!" });
+exports.create = async (req, res) => {
+    if (!req.body.email || !req.body.password || !req.body.name) {
+        return res.status(400).send({ message: "Email, password, and name are required!" });
     }
 
-    const user = new User({
-        email: req.body.email,
-        password_hash: req.body.password_hash,
-        name: req.body.name,
-        contact_details: req.body.contact_details
-    });
+    try {
+        // Log raw password
+        console.log("Raw Password:", req.body.password);
 
-    User.create(user, (err, data) => {
-        if (err)
-            res.status(500).send({ message: err.message || "Some error occurred while creating the User." });
-        else res.send(data);
-    });
+        // Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+        // Log hashed password
+        console.log("Hashed Password:", hashedPassword);
+
+        // Create a new user object
+        const user = new User({
+            email: req.body.email,
+            password_hash: hashedPassword, // Use hashed password
+            name: req.body.name,
+            contact_details: req.body.contact_details || null,
+        });
+
+        // Save the user to the database
+        User.create(user, (err, data) => {
+            if (err) {
+                console.error("Error during User.create:", err);
+                res.status(500).send({
+                    message: err.message || "Some error occurred while creating the user.",
+                });
+            } else {
+                res.status(201).send({ message: "User created successfully!", user: data });
+            }
+        });
+    } catch (error) {
+        console.error("Error during user creation:", error);
+        res.status(500).send({ message: "Internal server error." });
+    }
 };
+
+
+
+
+
 
 exports.findAll = (req, res) => {
     User.getAll((err, data) => {

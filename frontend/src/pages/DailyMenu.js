@@ -1,17 +1,26 @@
-import React from 'react';
-import './DailyMenu.css'; // Özel CSS dosyasını import edin
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './DailyMenu.css'; // Make sure to create or update this CSS file
 
 const DailyMenu = () => {
-    // Sahte menü verileri
-    const menuItems = [
-        ['Soup, Pasta, Cheesecake', 'Soup, Pasta, Cheesecake', 'Soup, Pasta, Cheesecake', 'Soup, Pasta, Cheesecake', 'Soup, Pasta, Cheesecake', 'Soup, Pasta, Cheesecake', 'Soup, Pasta, Cheesecake'],
-        ['Salad, Pizza, Brownie', 'Salad, Pizza, Brownie', 'Salad, Pizza, Brownie', 'Salad, Pizza, Brownie', 'Salad, Pizza, Brownie', 'Salad, Pizza, Brownie', 'Salad, Pizza, Brownie'],
-        ['Sandwich, Steak, Ice Cream', 'Sandwich, Steak, Ice Cream', 'Sandwich, Steak, Ice Cream', 'Sandwich, Steak, Ice Cream', 'Sandwich, Steak, Ice Cream', 'Sandwich, Steak, Ice Cream', 'Sandwich, Steak, Ice Cream'],
-        ['Chicken, Rice, Pudding', 'Chicken, Rice, Pudding', 'Chicken, Rice, Pudding', 'Chicken, Rice, Pudding', 'Chicken, Rice, Pudding', 'Chicken, Rice, Pudding', 'Chicken, Rice, Pudding'],
-        ['Fish, Noodles, Cake', 'Fish, Noodles, Cake', 'Fish, Noodles, Cake', 'Fish, Noodles, Cake', 'Fish, Noodles, Cake', 'Fish, Noodles, Cake', 'Fish, Noodles, Cake']
-    ];
+    const [menuData, setMenuData] = useState([]);
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    useEffect(() => {
+        const fetchMenu = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/cafeteria_menu`);
+                setMenuData(response.data);
+            } catch (error) {
+                console.error('Error fetching menu data:', error);
+            }
+        };
+        fetchMenu();
+    }, []);
+
+    const groupedMenus = days.map(day => {
+        return menuData.filter(menu => new Date(menu.date).toLocaleDateString('en-US', { weekday: 'long' }) === day);
+    });
 
     return (
         <div className="daily-menu-container">
@@ -25,11 +34,20 @@ const DailyMenu = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {menuItems.map((row, rowIndex) => (
+                    {groupedMenus[0].map((_, rowIndex) => (
                         <tr key={rowIndex}>
-                            {row.map((item, colIndex) => (
+                            {groupedMenus.map((menus, colIndex) => (
                                 <td key={colIndex} className={`menu-cell color-${(rowIndex + colIndex) % 5}`}>
-                                    <div className="menu-item">{item}</div>
+                                    {menus[rowIndex] ? (
+                                        <div className="menu-item">
+                                            <div><strong>{new Date(menus[rowIndex].date).toLocaleDateString('en-GB')}</strong></div>
+                                            {menus[rowIndex].menu_description.split(',').map((item, i) => (
+                                                <div key={i}>{item.trim()}</div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="menu-item"></div>
+                                    )}
                                 </td>
                             ))}
                         </tr>

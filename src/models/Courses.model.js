@@ -8,7 +8,7 @@ const Course = function (course) {
 Course.create = (newCourse, result) => {
     sql.query("INSERT INTO Courses SET ?", newCourse, (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.error("Error: ", err);
             result(err, null);
             return;
         }
@@ -19,7 +19,7 @@ Course.create = (newCourse, result) => {
 Course.getAll = (result) => {
     sql.query("SELECT * FROM Courses", (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.error("Error: ", err);
             result(null, err);
             return;
         }
@@ -30,7 +30,7 @@ Course.getAll = (result) => {
 Course.findById = (id, result) => {
     sql.query("SELECT * FROM Courses WHERE course_id = ?", [id], (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.error("Error: ", err);
             result(err, null);
             return;
         }
@@ -48,7 +48,7 @@ Course.updateById = (id, course, result) => {
         [course.course_name, course.course_description, id],
         (err, res) => {
             if (err) {
-                console.log("error: ", err);
+                console.error("Error: ", err);
                 result(err, null);
                 return;
             }
@@ -64,7 +64,7 @@ Course.updateById = (id, course, result) => {
 Course.remove = (id, result) => {
     sql.query("DELETE FROM Courses WHERE course_id = ?", [id], (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.error("Error: ", err);
             result(err, null);
             return;
         }

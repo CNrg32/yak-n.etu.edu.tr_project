@@ -1,9 +1,10 @@
 module.exports = app => {
     const courses = require('../controllers/Courses.controller');
 
-   // app.post('/courses', courses.create);              // Yeni bir ders oluştur
-   // app.get('/courses', courses.findAll);              // Tüm dersleri getir
-   // app.get('/courses/:courseId', courses.findOne);    // ID ile tek bir dersi getir
-   // app.put('/courses/:courseId', courses.update);     // ID ile dersi güncelle
-   // app.delete('/courses/:courseId', courses.delete);  // ID ile dersi sil
+    // Define the routes for courses
+    app.post('/courses', courses.create);              // Create a new course
+    app.get('/courses', courses.findAll);              // Get all courses
+    app.get('/courses/:courseId', courses.findOne);    // Get a course by ID
+    app.put('/courses/:courseId', courses.update);     // Update a course by ID
+    app.delete('/courses/:courseId', courses.delete);  // Delete a course by ID
 };

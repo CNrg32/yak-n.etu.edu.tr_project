@@ -1,9 +1,18 @@
-module.exports = app => {
+module.exports = (app) => {
     const studentCards = require('../controllers/Student_cards.controller');
 
-   // app.post('/student_cards', studentCards.create);               // Yeni bir öğrenci kartı oluştur
-   // app.get('/student_cards', studentCards.findAll);               // Tüm öğrenci kartlarını getir
-   // app.get('/student_cards/:cardId', studentCards.findOne);       // ID ile tek bir öğrenci kartını getir
-   // app.put('/student_cards/:cardId', studentCards.update);        // ID ile öğrenci kartını güncelle
-   // app.delete('/student_cards/:cardId', studentCards.delete);     // ID ile öğrenci kartını sil
+    if (!studentCards) {
+        console.error('Student_cards.controller.js could not be found or is undefined.');
+        return;
+    }
+
+    // Define routes
+    app.post('/student_cards', studentCards.create);
+    app.get('/student_cards', studentCards.findAll);
+    app.get('/student_cards/:cardId', studentCards.findOne);
+    app.put('/student_cards/:cardId', studentCards.update);
+    app.delete('/student_cards/:cardId', studentCards.delete);
+
+    // Add new route for updating balance
+    app.post('/student_cards/update_balance', studentCards.updateBalance);
 };

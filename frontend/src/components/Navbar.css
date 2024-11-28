@@ -3,19 +3,38 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #007bff; /* Mavi arka plan */
-    color: #ffffff;
+    background-color: #ffffff; /* Arka planı beyaz yapın */
+    color: #333; /* Yazı rengini siyah yapın */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    margin-left: 50px; 
+}
+
+
+.navbar-logo {
+    width: 30px;
+    margin-right: 10px; 
+}
+
+.navbar-title {
+    font-size: 20px; 
+    color: #333; 
+    margin: 0;
+    font-weight: bold; 
 }
 
 .nav-links {
     list-style: none;
     display: flex;
-    gap: 20px;
+    gap: 30px;
 }
 
 .nav-links a {
-    color: #ffffff;
+    color: #333;
     text-decoration: none;
     font-weight: bold;
     padding: 8px 12px;
@@ -23,5 +42,5 @@
 }
 
 .nav-links a:hover {
-    background-color: #0056b3; /* Daha koyu mavi hover efekti */
+    background-color: #f0f0f0; /* Hover efekti için açık gri arka plan */
 }
