@@ -170,6 +170,13 @@ CREATE TABLE `friends` (
 
 LOCK TABLES `friends` WRITE;
 /*!40000 ALTER TABLE `friends` DISABLE KEYS */;
+INSERT INTO `friends` (`friend_id`, `user_id`, `friend_user_id`) VALUES
+(1, 1, 2), -- User 1 is friends with User 2
+(2, 1, 3), -- User 1 is friends with User 3
+(3, 2, 4), -- User 2 is friends with User 4
+(4, 2, 5), -- User 2 is friends with User 5
+(5, 3, 6), -- User 3 is friends with User 6
+(6, 4, 7); -- User 4 is friends with User 7
 /*!40000 ALTER TABLE `friends` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -1,14 +1,15 @@
-const sql = require('../config/db_config');
+const sql = require('../config/db_config'); // Import your database configuration
 
-const Friend = function (friend) {
+const Friends = function (friend) {
     this.user_id = friend.user_id;
     this.friend_user_id = friend.friend_user_id;
 };
 
-Friend.create = (newFriend, result) => {
-    sql.query("INSERT INTO Friends SET ?", newFriend, (err, res) => {
+// Create a new Friend relationship
+Friends.create = (newFriend, result) => {
+    sql.query("INSERT INTO friends SET ?", newFriend, (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.error('Error inserting into database:', err);
             result(err, null);
             return;
         }
@@ -16,10 +17,11 @@ Friend.create = (newFriend, result) => {
     });
 };
 
-Friend.getAll = (result) => {
-    sql.query("SELECT * FROM Friends", (err, res) => {
+// Get all Friend relationships
+Friends.getAll = (result) => {
+    sql.query("SELECT * FROM friends", (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.error('Database query error:', err);
             result(null, err);
             return;
         }
@@ -27,10 +29,11 @@ Friend.getAll = (result) => {
     });
 };
 
-Friend.findById = (id, result) => {
-    sql.query("SELECT * FROM Friends WHERE friend_id = ?", [id], (err, res) => {
+// Find a Friend relationship by ID
+Friends.findById = (id, result) => {
+    sql.query("SELECT * FROM friends WHERE friend_id = ?", [id], (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.error('Database query error:', err);
             result(err, null);
             return;
         }
@@ -42,13 +45,14 @@ Friend.findById = (id, result) => {
     });
 };
 
-Friend.updateById = (id, friend, result) => {
+// Update a Friend relationship by ID
+Friends.updateById = (id, friend, result) => {
     sql.query(
-        "UPDATE Friends SET user_id = ?, friend_user_id = ? WHERE friend_id = ?",
+        "UPDATE friends SET user_id = ?, friend_user_id = ? WHERE friend_id = ?",
         [friend.user_id, friend.friend_user_id, id],
         (err, res) => {
             if (err) {
-                console.log("error: ", err);
+                console.error('Database update error:', err);
                 result(err, null);
                 return;
             }
@@ -61,10 +65,11 @@ Friend.updateById = (id, friend, result) => {
     );
 };
 
-Friend.remove = (id, result) => {
-    sql.query("DELETE FROM Friends WHERE friend_id = ?", [id], (err, res) => {
+// Delete a Friend relationship by ID
+Friends.remove = (id, result) => {
+    sql.query("DELETE FROM friends WHERE friend_id = ?", [id], (err, res) => {
         if (err) {
-            console.log("error: ", err);
+            console.error('Database delete error:', err);
             result(err, null);
             return;
         }
@@ -76,4 +81,4 @@ Friend.remove = (id, result) => {
     });
 };
 
-module.exports = Friend;
+module.exports = Friends;
