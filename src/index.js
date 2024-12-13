@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = 3001;
+const PORT = 3006;
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const db = require('./config/db_config'); // Veritabanı bağlantısını içe aktarın

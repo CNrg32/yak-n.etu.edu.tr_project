@@ -1,109 +1,289 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ManageFriendsScreen extends StatelessWidget {
+class ManageFriendsScreen extends StatefulWidget {
   const ManageFriendsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Sample data for friends
-    final List<Map<String, dynamic>> friends = List.generate(
-      10,
-      (index) => {
-        'name': 'Jonas',
-        'surname': 'Svensson',
-        'age': 15,
-        'class': 8,
+  State<ManageFriendsScreen> createState() => _ManageFriendsScreenState();
+}
+
+class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
+  String? studentNumber;
+  List<Map<String, dynamic>> friends = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStudentNumberAndFriends();
+  }
+
+  Future<void> _loadStudentNumberAndFriends() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    studentNumber = prefs.getString('studentNumber');
+
+    if (studentNumber != null) {
+      try {
+        QuerySnapshot snapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(studentNumber)
+            .collection('friends')
+            .get();
+
+        setState(() {
+          friends = snapshot.docs.map((doc) {
+            return doc.data() as Map<String, dynamic>;
+          }).toList();
+          isLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Hata: $e')),
+        );
+      }
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Öğrenci numarası bulunamadı.')),
+      );
+    }
+  }
+
+  // Arkadaş ekleme fonksiyonu
+  Future<void> _addFriend() async {
+    String friendStudentNumber = '';
+    String friendPhoneNumber = '';
+    final parentContext = context; // Üst context'i kaydedin
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Friend'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Friend\'s Student Number',
+                  ),
+                  onChanged: (value) {
+                    friendStudentNumber = value.trim();
+                  },
+                ),
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Friend\'s Phone Number',
+                  ),
+                  onChanged: (value) {
+                    friendPhoneNumber = value.trim();
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Dialogu kapat
+
+                if (friendStudentNumber.isEmpty ||
+                    friendPhoneNumber.isEmpty) {
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                    const SnackBar(
+                        content: Text('Please enter both values.')),
+                  );
+                  return;
+                }
+
+                // Kullanıcıyı arayalım
+                QuerySnapshot userSnapshot = await FirebaseFirestore.instance
+                    .collection('users')
+                    .where('studentNumber', isEqualTo: friendStudentNumber)
+                    .where('phone', isEqualTo: friendPhoneNumber)
+                    .get();
+
+                if (userSnapshot.docs.isNotEmpty) {
+                  // Kullanıcı bulundu
+                  var friendData =
+                      userSnapshot.docs.first.data() as Map<String, dynamic>;
+                  String foundStudentNumber = friendData['studentNumber'] ?? '';
+
+                  // Zaten arkadaş mı?
+                  bool alreadyFriend = friends.any((friend) =>
+                      friend['studentNumber'] == foundStudentNumber);
+
+                  if (alreadyFriend) {
+                    ScaffoldMessenger.of(parentContext).showSnackBar(
+                      const SnackBar(
+                          content: Text('This user is already your friend.')),
+                    );
+                    return;
+                  }
+
+                  // Kendi kendini eklemeye çalışıyor mu?
+                  if (foundStudentNumber == studentNumber) {
+                    ScaffoldMessenger.of(parentContext).showSnackBar(
+                      const SnackBar(
+                          content: Text('You cannot add yourself as a friend.')),
+                    );
+                    return;
+                  }
+
+                  // Arkadaşı ekleyelim
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(studentNumber)
+                      .collection('friends')
+                      .doc(foundStudentNumber)
+                      .set({
+                    'studentNumber': foundStudentNumber,
+                    'name': friendData['name'] ?? '',
+                    'surname': friendData['surname'] ?? '',
+                    'phone': friendData['phone'] ?? '',
+                    'email': friendData['email'] ?? '',
+                    // Diğer gerekli bilgiler
+                  });
+
+                  setState(() {
+                    friends.add({
+                      'studentNumber': foundStudentNumber,
+                      'name': friendData['name'] ?? '',
+                      'surname': friendData['surname'] ?? '',
+                      'phone': friendData['phone'] ?? '',
+                      'email': friendData['email'] ?? '',
+                    });
+                  });
+
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                    const SnackBar(content: Text('Friend added successfully.')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(parentContext).showSnackBar(
+                    const SnackBar(content: Text('User not found.')),
+                  );
+                }
+              },
+              child: const Text('Add'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dialogu kapat
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
       },
     );
+  }
+
+  // Arkadaşı silme fonksiyonu
+  Future<void> _removeFriend(String friendStudentNumber) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(studentNumber)
+          .collection('friends')
+          .doc(friendStudentNumber)
+          .delete();
+
+      setState(() {
+        friends.removeWhere(
+            (friend) => friend['studentNumber'] == friendStudentNumber);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Friend removed successfully.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("EduConnect"),
-        backgroundColor: Colors.blueAccent,
+        title: const Text('Manage Friends'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Manage Friends",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  headingRowColor: MaterialStateProperty.resolveWith(
-                    (states) => Colors.blueAccent.withOpacity(0.1),
-                  ),
-                  columns: const [
-                    DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Surname', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Age', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Class', style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(label: Text('Process', style: TextStyle(fontWeight: FontWeight.bold))),
-                  ],
-                  rows: friends.map((friend) {
-                    return DataRow(cells: [
-                      DataCell(Text(friend['name'] as String)),
-                      DataCell(Text(friend['surname'] as String)),
-                      DataCell(Text(friend['age'].toString())), // Convert to String
-                      DataCell(Text(friend['class'].toString())), // Convert to String
-                      DataCell(
-                        ElevatedButton(
-                          onPressed: () {
-                            // Handle Remove action
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
-                          ),
-                          child: const Text("Remove"),
-                        ),
-                      ),
-                    ]);
-                  }).toList(),
-                ),
+            // Arkadaş Ekleme Butonu
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton.icon(
+                onPressed: _addFriend,
+                icon: const Icon(Icons.person_add),
+                label: const Text('Add Friend'),
               ),
             ),
             const SizedBox(height: 16),
-            // Pagination Controls
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    // Handle previous page
-                  },
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Handle page change
-                  },
-                  child: const Text("1"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Handle page change
-                  },
-                  child: const Text("2"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Handle page change
-                  },
-                  child: const Text("3"),
-                ),
-                const Text("..."),
-                IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios),
-                  onPressed: () {
-                    // Handle next page
-                  },
-                ),
-              ],
+            Expanded(
+              child: friends.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'You have no friends yet.',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        headingRowColor: MaterialStateProperty.resolveWith(
+                          (states) => Colors.blueAccent.withOpacity(0.1),
+                        ),
+                        columns: const [
+                          DataColumn(
+                              label: Text('Name',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Student Number',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Process',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                        ],
+                        rows: friends.map((friend) {
+                          return DataRow(cells: [
+                            DataCell(Text(friend['name'] as String)),
+                            DataCell(Text(friend['studentNumber'] as String)),
+                            DataCell(
+                              ElevatedButton(
+                                onPressed: () {
+                                  _removeFriend(
+                                      friend['studentNumber'] as String);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                                child: const Text("Remove"),
+                              ),
+                            ),
+                          ]);
+                        }).toList(),
+                      ),
+                    ),
             ),
           ],
         ),
