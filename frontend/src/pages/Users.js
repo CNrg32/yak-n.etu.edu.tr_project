@@ -1,136 +1,46 @@
+// User.js
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './Users.css';
 
-const Users = () => {
-    const [users, setUsers] = useState([]);
-    console.log(users);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [newUserData, setNewUserData] = useState({
-        email: '',
-        name: '',
-        contact_details: ''
-    });
+const User = () => {
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
-//     // Tüm kullanıcıları çekme
-//     useEffect(() => {
-//         const fetchUsers = async () => {
-//             try {
-//                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
-//                 setUsers(response.data);
-//             } catch (error) {
-//                 console.error('Error fetching users:', error);
-//             }
-//         };
-//         fetchUsers();
-//         console.log(users)
-//     }, []);
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
+                const currentUser = response.data.find(user => user.user_id === 1);
+                setUser(currentUser);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        fetchUser();
+    }, []);
 
-//     // Kullanıcı güncelleme
-//     const handleUpdateUser = async (userId) => {
-//         try {
-//             const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/${userId}`, selectedUser);
-//             console.log('User updated:', response.data);
-//             // Listeyi güncelle
-//             setUsers(users.map(user => (user.user_id === userId ? response.data : user)));
-//         } catch (error) {
-//             console.error(`Error updating user with ID ${userId}:`, error);
-//         }
-//     };
+    const handleLogout = () => {
+        console.log('User logged out');
+        navigate('/login');
+    };
 
-//     // Kullanıcı silme
-//     const handleDeleteUser = async (userId) => {
-//         try {
-//             await axios.delete(`${process.env.REACT_APP_API_URL}/users/${userId}`);
-//             console.log(`User with ID ${userId} deleted`);
-//             // Silinen kullanıcıyı listeden çıkar
-//             setUsers(users.filter(user => user.user_id !== userId));
-//         } catch (error) {
-//             console.error(`Error deleting user with ID ${userId}:`, error);
-//         }
-//     };
+    if (!user) {
+        return <div>Loading user information...</div>;
+    }
 
-//     return (
-//         <div>
-//             <h1>Users</h1>
-//             <table>
-//                 <thead>
-//                     <tr>
-//                         <th>Email</th>
-//                         <th>Name</th>
-//                         <th>Contact Details</th>
-//                         <th>Actions</th>
-//                     </tr>
-//                 </thead>
-//                 <tbody>
-//                     {users.map(user => (
-//                         <tr key={user.user_id}>
-//                             <td>{user.email}</td>
-//                             <td>{user.name}</td>
-//                             <td>{user.contact_details}</td>
-//                             <td>
-//                                 <button onClick={() => setSelectedUser(user)}>Edit</button>
-//                                 <button onClick={() => handleDeleteUser(user.user_id)}>Delete</button>
-//                             </td>
-//                         </tr>
-//                     ))}
-//                 </tbody>
-//             </table>
+    return (
+        <div className="user-container">
+            <h1>User Profile</h1>
+            <div className="user-details">
+                <p><strong>Name:</strong> {user.name}</p>
+                <p><strong>Email:</strong> {user.email}</p>
+                <p><strong>Contact Details:</strong> {user.contact_details || 'N/A'}</p>
+            </div>
+            <button className="logout-button" onClick={handleLogout}>Logout</button>
+        </div>
+    );
+};
 
-//             {selectedUser && (
-//                 <div>
-//                     <h2>Edit User</h2>
-//                     <input
-//                         type="text"
-//                         value={selectedUser.email}
-//                         onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
-//                         placeholder="Email"
-//                     />
-//                     <input
-//                         type="text"
-//                         value={selectedUser.name}
-//                         onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
-//                         placeholder="Name"
-//                     />
-//                     <input
-//                         type="text"
-//                         value={selectedUser.contact_details}
-//                         onChange={(e) => setSelectedUser({ ...selectedUser, contact_details: e.target.value })}
-//                         placeholder="Contact Details"
-//                     />
-//                     <button onClick={() => handleUpdateUser(selectedUser.user_id)}>Update</button>
-//                 </div>
-//             )}
-
-//             <h2>Add New User</h2>
-//             <input
-//                 type="text"
-//                 value={newUserData.email}
-//                 onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
-//                 placeholder="Email"
-//             />
-//             <input
-//                 type="text"
-//                 value={newUserData.name}
-//                 onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
-//                 placeholder="Name"
-//             />
-//             <input
-//                 type="text"
-//                 value={newUserData.contact_details}
-//                 onChange={(e) => setNewUserData({ ...newUserData, contact_details: e.target.value })}
-//                 placeholder="Contact Details"
-//             />
-//             <button onClick={async () => {
-//                 try {
-//                     const response = await axios.post(`${process.env.REACT_APP_API_URL}/users`, newUserData);
-//                     setUsers([...users, response.data]);
-//                     setNewUserData({ email: '', name: '', contact_details: '' });
-//                 } catch (error) {
-//                     console.error('Error adding new user:', error);
-//                 }
-//             }}>Add User</button>
-//         </div>
-//     );
- };
-
-export default Users;
+export default User;

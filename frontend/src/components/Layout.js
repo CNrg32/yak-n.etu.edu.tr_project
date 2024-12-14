@@ -1,12 +1,12 @@
 import React from 'react';
 import Navbar from './Navbar';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, hideNavbar }) => {
     return (
-        <>
-            <Navbar />
+        <div>
+            {!hideNavbar && <Navbar />}
             <main>{children}</main>
-        </>
+        </div>
     );
 };
 

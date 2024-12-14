@@ -35,7 +35,6 @@ const SignUp = () => {
         }
     };
 
-
     return (
         <div className="signup-container">
             <h1>Create an Account</h1>

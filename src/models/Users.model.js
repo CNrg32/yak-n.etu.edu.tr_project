@@ -23,6 +23,26 @@ User.create = (newUser, result) => {
     });
 };
 
+//balance göstermek için ekledim
+User.getAllWithBalance = (result) => {
+    console.log("Executing SQL query to fetch users with balances...");
+    const query = `
+        SELECT u.user_id, u.name, u.email, u.contact_details, sc.balance
+        FROM Users u
+        LEFT JOIN Student_Cards sc ON u.user_id = sc.user_id;
+    `;
+
+    sql.query(query, (err, res) => {
+        if (err) {
+            console.error("SQL Error:", err);
+            result(null, err);
+            return;
+        }
+        console.log("SQL Query Result:", res);
+        result(null, res);
+    });
+};
+
 
 // Find a user by email
 User.findByEmail = (email, result) => {

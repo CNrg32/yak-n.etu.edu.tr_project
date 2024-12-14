@@ -17,23 +17,108 @@ import SignUp from './pages/SignUp';
 function App() {
     return (
         <Router>
-            <Layout>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<SignUp />} />
-                    <Route path="/" element={<Home />} />
-                    <Route path="/courses" element={<Courses />} />
-                    {/* <Route path="/syllabus" element={<Syllabus />} /> */}
-                    <Route path="/daily-menu" element={<DailyMenu />} />
-                    <Route path="/empty-classrooms" element={<EmptyClassrooms />} />
-                    <Route path="/enrollments" element={<Enrollments />} />
-                    <Route path="/manage-friends" element={<ManageFriends />} />
-                    <Route path="/student-cards" element={<StudentCards />} />
-                  <Route path="/student-cards/validate-payment-method" element={<ValidatePaymentMethod />} />
-                    <Route path="/users" element={<Users />} />
-                    <Route path="*" element={<h1>404 - Page Not Found</h1>} />
-                </Routes>
-            </Layout>
+            <Routes>
+                {/* Routes without Navbar */}
+                <Route
+                    path="/login"
+                    element={
+                        <Layout hideNavbar={true}>
+                            <Login />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/signup"
+                    element={
+                        <Layout hideNavbar={true}>
+                            <SignUp />
+                        </Layout>
+                    }
+                />
+
+                {/* Routes with Navbar */}
+                <Route
+                    path="/"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <Home />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/courses"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <Courses />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/enrollments"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <Enrollments />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/manage-friends"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <ManageFriends />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/student-cards"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <StudentCards />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/student-cards/validate-payment-method"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <ValidatePaymentMethod />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/users"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <Users />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/daily-menu"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <DailyMenu />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/empty-classrooms"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <EmptyClassrooms />
+                        </Layout>
+                    }
+                />
+                <Route
+                    path="/syllabus"
+                    element={
+                        <Layout hideNavbar={false}>
+                            <Syllabus />
+                        </Layout>
+                    }
+                />
+                <Route path="*" element={<h1>404 - Page Not Found</h1>} />
+            </Routes>
         </Router>
     );
 }
