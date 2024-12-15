@@ -1,5 +1,5 @@
 module.exports = app => {
-    const enrollments = require('../controllers/enrollments.controller');
+    const enrollments = require('../controllers/Enrollments.controller');
 
     // Create a new enrollment
     app.post('/enrollments', enrollments.create);

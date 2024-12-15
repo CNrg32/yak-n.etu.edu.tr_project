@@ -1,4 +1,4 @@
-const Classroom = require('../models/classrooms.model');
+const Classroom = require('../models/Classrooms.model');
 
 exports.create = (req, res) => {
     if (!req.body) {

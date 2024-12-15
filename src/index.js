@@ -42,4 +42,3 @@ app.listen(PORT, () => {
 });
 const studentCardRoutes = require('./routes/Student_Cards.routes');
 studentCardRoutes(app);
-

@@ -1,4 +1,4 @@
-const Enrollment = require('../models/enrollments.model');
+const Enrollment = require('../models/Enrollments.model');
 
 // Create a new enrollment
 exports.create = (req, res) => {

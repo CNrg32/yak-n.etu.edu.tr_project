@@ -1,5 +1,5 @@
 module.exports = app => {
-    const cafeteriaMenu = require('../controllers/Cafeteria_menu.controller');
+    const cafeteriaMenu = require('../controllers/Cafeteria_Menu.controller');
 
     app.post('/cafeteria_menu', cafeteriaMenu.create);           // Yeni bir yemek menüsü oluştur
     app.get('/cafeteria_menu', cafeteriaMenu.findAll);           // Tüm yemek menülerini getir

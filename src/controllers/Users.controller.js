@@ -1,5 +1,3 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const User = require('../models/users.model');
 
 // Create a new user
@@ -9,15 +7,12 @@ exports.create = async (req, res) => {
     }
 
     try {
-        console.log("Raw Password:", req.body.password);
+        console.log("Password:", req.body.password);
 
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-        console.log("Hashed Password:", hashedPassword);
-
+        // Directly use the plain text password (NOT recommended for production)
         const user = new User({
             email: req.body.email,
-            password_hash: hashedPassword,
+            password_hash: req.body.password, // Directly storing the plain password
             name: req.body.name,
             contact_details: req.body.contact_details || null,
         });
@@ -41,26 +36,23 @@ exports.create = async (req, res) => {
 // Login functionality
 exports.login = async (req, res) => {
     const { email, password } = req.body;
-
+    console.log(email, password);//iş bitince kaldır
+    console.log(`abi`);//iş bitince kaldır
     if (!email || !password) {
         return res.status(400).send({ message: 'Email and password are required!' });
     }
 
-    User.findByEmail(email, async (err, user) => {
+    User.findByEmail(email, (err, user) => {
         if (err || !user) {
-            return res.status(404).send({ message: 'User not found!' });
+            return res.status(404).send({ message: 'Invalid email or password.' });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-        if (!isPasswordValid) {
-            return res.status(401).send({ message: 'Invalid credentials!' });
+        // Directly compare the password (NOT recommended for production)
+        if (password !== user.password_hash) {
+            return res.status(401).send({ message: 'Invalid email or password.' });
         }
 
-        const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, {
-            expiresIn: '1h',
-        });
-
-        res.send({ token, user });
+        return res.status(200).send({ userId: user.user_id });
     });
 };
 
