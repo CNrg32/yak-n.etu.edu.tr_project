@@ -219,9 +219,6 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Manage Friends'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -231,8 +228,9 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
               alignment: Alignment.centerRight,
               child: ElevatedButton.icon(
                 onPressed: _addFriend,
-                icon: const Icon(Icons.person_add),
-                label: const Text('Add Friend'),
+                icon: const Icon(Icons.person_add, color: Colors.blue),
+                label: const Text('Add Friend', style: TextStyle(color: Colors.blue),),
+                
               ),
             ),
             const SizedBox(height: 16),
@@ -277,7 +275,7 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.redAccent,
                                 ),
-                                child: const Text("Remove"),
+                                child: const Text("Remove", style: TextStyle(color: Colors.white),),
                               ),
                             ),
                           ]);

@@ -1,3 +1,5 @@
+// lib/empty_classrooms_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -10,11 +12,37 @@ class EmptyClassroomsScreen extends StatefulWidget {
 
 class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
   TextEditingController _classroomController = TextEditingController();
-  Map<String, bool>? schedule;
+  Map<String, Map<String, bool>>? schedule; // Haftanın günleri için
   bool isLoading = false;
   List<String> allClassrooms = [];
   List<String> filteredClassrooms = [];
   String? selectedClassroom;
+
+  // Haftanın günleri
+  final List<String> _daysOfWeek = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
+  // Seçili gün için zaman dilimlerini alır
+  List<String> _currentDayTimeSlots(String day) {
+    return [
+      '09:00',
+      '10:00',
+      '11:00',
+      '12:00',
+      '13:00',
+      '14:00',
+      '15:00',
+      '16:00',
+      '17:00',
+    ];
+  }
 
   @override
   void initState() {
@@ -82,15 +110,42 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
           .get();
 
       if (doc.exists) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        Map<String, dynamic> scheduleData = data['schedule'] ?? {};
+
+        // Haftanın her günü için zaman dilimlerini al
+        Map<String, Map<String, bool>> loadedSchedule = {};
+        for (String day in _daysOfWeek) {
+          if (scheduleData.containsKey(day)) {
+            loadedSchedule[day] = Map<String, bool>.from(
+                scheduleData[day].map((key, value) => MapEntry(key, value as bool)));
+          } else {
+            // Eğer gün için program yoksa, tüm zaman dilimlerini boş olarak ayarla
+            loadedSchedule[day] = {
+              '09:00': false,
+              '10:00': false,
+              '11:00': false,
+              '12:00': false,
+              '13:00': false,
+              '14:00': false,
+              '15:00': false,
+              '16:00': false,
+              '17:00': false,
+            };
+          }
+        }
+
         setState(() {
-          schedule = Map<String, bool>.from(doc.get('schedule'));
-          // Zaman dilimlerini sıralı hale getirelim
-          schedule = Map.fromEntries(schedule!.entries.toList()
-            ..sort((e1, e2) => e1.key.compareTo(e2.key)));
+          schedule = loadedSchedule;
           isLoading = false;
         });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Program yüklendi')),
+        );
       } else {
         setState(() {
+          schedule = null;
           isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
@@ -110,9 +165,6 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Empty Classrooms'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -156,37 +208,41 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
             // Seçilen Sınıfın Zaman Çizelgesi
             if (schedule != null && selectedClassroom != null)
               Expanded(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 16),
-                    Text(
-                      'Schedule for $selectedClassroom',
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Expanded(
-                      child: ListView(
-                        children: schedule!.entries.map((entry) {
-                          String time = entry.key;
-                          bool isEmpty = entry.value;
-                          return ListTile(
-                            leading: Icon(
-                              isEmpty ? Icons.check_circle : Icons.cancel,
-                              color: isEmpty ? Colors.green : Colors.red,
-                            ),
-                            title: Text('$time'),
-                            subtitle: Text(
-                              isEmpty ? 'Empty' : 'Occupied',
-                              style: TextStyle(
-                                color: isEmpty ? Colors.green : Colors.red,
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      Text(
+                        'Schedule for $selectedClassroom',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      ..._daysOfWeek.map((day) {
+                        return ExpansionTile(
+                          title: Text(day),
+                          children: [
+                            ..._currentDayTimeSlots(day).map((time) {
+                              bool isEmpty = schedule![day]![time]!;
+                              return ListTile(
+                                leading: Icon(
+                                  isEmpty ? Icons.check_circle : Icons.cancel,
+                                  color: isEmpty ? Colors.green : Colors.red,
+                                ),
+                                title: Text(time),
+                                subtitle: Text(
+                                  isEmpty ? 'Empty' : 'Occupied',
+                                  style: TextStyle(
+                                    color: isEmpty ? Colors.green : Colors.red,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                        );
+                      }).toList(),
+                    ],
+                  ),
                 ),
               ),
             if (schedule == null &&
@@ -202,4 +258,5 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
       ),
     );
   }
+
 }

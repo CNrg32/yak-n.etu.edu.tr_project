@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // SharedPreferences'ı içe aktarın
+import 'package:yakin_app/admin/admin_screen.dart';
 import 'main_screen.dart'; // MainScreen'i içe aktarın
 import 'signup_screen.dart'; // SignupScreen'i içe aktarın
 import 'animated_background.dart'; // AnimatedBackground widget'ını içe aktarın
@@ -15,7 +16,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _studentNumberController = TextEditingController();
+  final TextEditingController _studentNumberController =
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _login() async {
@@ -36,19 +38,26 @@ class _LoginScreenState extends State<LoginScreen> {
           .get();
 
       if (userDoc.exists) {
-        Map<String, dynamic> userData =
-            userDoc.data() as Map<String, dynamic>;
+        Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
         if (userData['password'] == password) {
           // Giriş başarılı, login değerini kaydet
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setBool('login', true);
           await prefs.setString('studentNumber', studentNumber);
 
-          // MainScreen'e yönlendir
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-          );
+          if (userDoc.id == '0') {
+            // Admin kullanıcı, AdminScreen'e yönlendir
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AdminScreen()),
+            );
+          } else {
+            // Normal kullanıcı, MainScreen'e yönlendir
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MainScreen()),
+            );
+          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Şifre yanlış')),
@@ -62,7 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bir hata oluştu. Lütfen tekrar deneyin.')),
+        const SnackBar(
+            content: Text('Bir hata oluştu. Lütfen tekrar deneyin.')),
       );
     }
   }
@@ -112,14 +122,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Enabled durumunda border rengi mavi
+                            color: Colors
+                                .blue, // Enabled durumunda border rengi mavi
                             width: 2.0,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.lightBlue, // Focused durumda açık mavi
+                            color:
+                                Colors.lightBlue, // Focused durumda açık mavi
                             width: 2.0,
                           ),
                         ),
@@ -146,14 +158,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Enabled durumunda border rengi mavi
+                            color: Colors
+                                .blue, // Enabled durumunda border rengi mavi
                             width: 2.0,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.lightBlue, // Focused durumda açık mavi
+                            color:
+                                Colors.lightBlue, // Focused durumda açık mavi
                             width: 2.0,
                           ),
                         ),
@@ -166,16 +180,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       onPressed: _login,
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (states) {
                             if (states.contains(MaterialState.pressed)) {
-                              return Colors.lightBlue; // Butona basıldığında açık mavi
+                              return Colors
+                                  .lightBlue; // Butona basıldığında açık mavi
                             }
-                            return Colors.white.withOpacity(0.8); // Normal durumda beyaz opaklık
+                            return Colors.white.withOpacity(
+                                0.8); // Normal durumda beyaz opaklık
                           },
                         ),
                         padding: MaterialStateProperty.all(
-                          const EdgeInsets.symmetric(horizontal: 100, vertical: 16),
+                          const EdgeInsets.symmetric(
+                              horizontal: 100, vertical: 16),
                         ),
                         shape: MaterialStateProperty.all(
                           RoundedRectangleBorder(

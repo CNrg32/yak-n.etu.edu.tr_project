@@ -55,25 +55,16 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
           setState(() {
             isLoading = false;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Kullanıcı bulunamadı.')),
-          );
         }
       } catch (e) {
         setState(() {
           isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Hata: $e')),
-        );
       }
     } else {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Öğrenci numarası bulunamadı.')),
-      );
     }
   }
 
@@ -240,8 +231,8 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
                   onPressed: () {
                     _addLesson(day);
                   },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Ders Ekle'),
+                  icon: const Icon(Icons.add, color: Colors.blue,),
+                  label: const Text('Ders Ekle', style: TextStyle(color: Colors.blue),),
                 ),
               ],
             );

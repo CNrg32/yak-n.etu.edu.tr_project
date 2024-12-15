@@ -54,25 +54,16 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
           setState(() {
             isLoading = false;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Kullanıcı bulunamadı.')),
-          );
         }
       } catch (e) {
         setState(() {
           isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Hata: $e')),
-        );
       }
     } else {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Öğrenci numarası bulunamadı.')),
-      );
     }
   }
 
@@ -94,9 +85,6 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
 
     if (syllabusData == null || syllabusData!.isEmpty) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('Ders Programı'),
-        ),
         body: const Center(
           child: Text(
             'Ders programı bulunamadı.',
@@ -105,6 +93,8 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.edit),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.blue,
           onPressed: () async {
             // Düzenleme ekranına git ve geri döndüğünde ders programını yenile
             await Navigator.push(
@@ -197,9 +187,6 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
         .toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ders Programı'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -221,6 +208,8 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.edit),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.blue,
         onPressed: () async {
           // Düzenleme ekranına git ve geri döndüğünde ders programını yenile
           await Navigator.push(

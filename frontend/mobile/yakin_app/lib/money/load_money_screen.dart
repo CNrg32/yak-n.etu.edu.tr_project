@@ -81,9 +81,6 @@ class _LoadMoneyScreenState extends State<LoadMoneyScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Load Money'),
-      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -139,6 +136,7 @@ class _LoadMoneyScreenState extends State<LoadMoneyScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
                   padding:
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 ),
@@ -157,6 +155,7 @@ class _LoadMoneyScreenState extends State<LoadMoneyScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[400],
+                  foregroundColor: Colors.white,
                   padding:
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 ),

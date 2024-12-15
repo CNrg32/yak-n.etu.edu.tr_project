@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:yakin_app/admin/admin_menu.dart';
 
-import 'daily_menu_screen.dart'; // MenuItem modelini kullanmak için
+import '../menu/daily_menu_screen.dart'; // MenuItem modelini kullanmak için
 
 class EditDailyMenuScreen extends StatefulWidget {
   final DateTime selectedDate;
-  final List<MenuItem>? currentMenu;
+  final List<MenuItem2>? currentMenu;
 
   const EditDailyMenuScreen({
     super.key,

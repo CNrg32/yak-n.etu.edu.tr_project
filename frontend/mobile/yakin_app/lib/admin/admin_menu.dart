@@ -4,16 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore için
 import '../admin/edit_daily_menu_screen.dart'; // Yemek ekleme ekranını içe aktarın
 
 // Model class for Menu Items
-class MenuItem {
+class MenuItem2 {
   final String type;
   final String name;
   final int calories;
 
-  MenuItem({required this.type, required this.name, required this.calories});
+  MenuItem2({required this.type, required this.name, required this.calories});
 
   // Firestore'dan veri çekerken kullanmak için bir factory constructor ekleyelim
-  factory MenuItem.fromMap(Map<String, dynamic> data) {
-    return MenuItem(
+  factory MenuItem2.fromMap(Map<String, dynamic> data) {
+    return MenuItem2(
       type: data['type'] ?? '',
       name: data['name'] ?? '',
       calories: data['calories'] ?? 0,
@@ -30,18 +30,18 @@ class MenuItem {
   }
 }
 
-class DailyMenuScreen extends StatefulWidget {
-  const DailyMenuScreen({super.key});
+class AdminMenu extends StatefulWidget {
+  const AdminMenu({super.key});
 
   @override
-  _DailyMenuScreenState createState() => _DailyMenuScreenState();
+  _AdminMenuState createState() => _AdminMenuState();
 }
 
-class _DailyMenuScreenState extends State<DailyMenuScreen> {
+class _AdminMenuState extends State<AdminMenu> {
   DateTime _selectedDate = DateTime.now();
 
   bool isLoading = true;
-  List<MenuItem>? currentMenu;
+  List<MenuItem2>? currentMenu;
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
 
         setState(() {
           currentMenu = menuData.map((item) {
-            return MenuItem.fromMap(item as Map<String, dynamic>);
+            return MenuItem2.fromMap(item as Map<String, dynamic>);
           }).toList();
           isLoading = false;
         });
@@ -128,6 +128,9 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Daily Menu'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -175,7 +178,7 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
                 child: ListView.builder(
                   itemCount: currentMenu!.length,
                   itemBuilder: (context, index) {
-                    MenuItem menuItem = currentMenu![index];
+                    MenuItem2 menuItem = currentMenu![index];
                     return Card(
                       margin: const EdgeInsets.symmetric(vertical: 8.0),
                       elevation: 3,
@@ -236,6 +239,22 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
               ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.edit),
+        onPressed: () async {
+          // Yemek ekleme ekranına git ve geri döndüğünde menüyü yenile
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditDailyMenuScreen(
+                selectedDate: _selectedDate,
+                currentMenu: currentMenu,
+              ),
+            ),
+          );
+          _refreshMenu();
+        },
       ),
     );
   }

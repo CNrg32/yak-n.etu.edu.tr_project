@@ -261,7 +261,7 @@ Future<void> _saveTransactionToHistory(double amount) async {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _loadMoney,
-                    child: const Text('Load'),
+                    child: const Text('Load', style: TextStyle(color: Colors.blue),),
                   ),
                 ],
               ),
