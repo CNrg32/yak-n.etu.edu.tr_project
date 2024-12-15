@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:yakin_app/admin/admin_menu.dart';
 
-import '../menu/daily_menu_screen.dart'; // MenuItem modelini kullanmak için
+import '../menu/daily_menu_screen.dart';
 
 class EditDailyMenuScreen extends StatefulWidget {
   final DateTime selectedDate;
@@ -39,15 +39,14 @@ class _EditDailyMenuScreenState extends State<EditDailyMenuScreen> {
       menuItems = [];
     }
 
-    // Kontrolörleri oluştur
     for (var item in menuItems) {
       typeControllers.add(TextEditingController(text: item.type));
       nameControllers.add(TextEditingController(text: item.name));
-      calorieControllers.add(TextEditingController(text: item.calories.toString()));
+      calorieControllers
+          .add(TextEditingController(text: item.calories.toString()));
     }
   }
 
-  // Yeni menü öğesi eklemek için
   void _addMenuItem() {
     setState(() {
       menuItems.add(MenuItem(type: '', name: '', calories: 0));
@@ -57,7 +56,6 @@ class _EditDailyMenuScreenState extends State<EditDailyMenuScreen> {
     });
   }
 
-  // Menü öğesini silmek için
   void _removeMenuItem(int index) {
     setState(() {
       menuItems.removeAt(index);
@@ -70,23 +68,21 @@ class _EditDailyMenuScreenState extends State<EditDailyMenuScreen> {
     });
   }
 
-  // Menüyü kaydetmek için
   Future<void> _saveMenu() async {
     setState(() {
       isLoading = true;
     });
 
-    // Kontrolörlerden değerleri al
     List<MenuItem> updatedMenuItems = [];
     for (int i = 0; i < menuItems.length; i++) {
       String type = typeControllers[i].text.trim();
       String name = nameControllers[i].text.trim();
       int calories = int.tryParse(calorieControllers[i].text.trim()) ?? 0;
 
-      updatedMenuItems.add(MenuItem(type: type, name: name, calories: calories));
+      updatedMenuItems
+          .add(MenuItem(type: type, name: name, calories: calories));
     }
 
-    // Firestore'a kaydet
     String formattedDate = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
 
     try {
@@ -105,7 +101,7 @@ class _EditDailyMenuScreenState extends State<EditDailyMenuScreen> {
         const SnackBar(content: Text('Menu saved successfully.')),
       );
 
-      Navigator.pop(context); // Geri dön
+      Navigator.pop(context);
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -134,7 +130,6 @@ class _EditDailyMenuScreenState extends State<EditDailyMenuScreen> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  // Seçilen tarihi göster
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
@@ -145,7 +140,6 @@ class _EditDailyMenuScreenState extends State<EditDailyMenuScreen> {
                       ),
                     ),
                   ),
-                  // Menü öğelerini listeler
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -178,8 +172,8 @@ class _EditDailyMenuScreenState extends State<EditDailyMenuScreen> {
                                 controller: calorieControllers[index],
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete,
-                                    color: Colors.red),
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
                                   _removeMenuItem(index);
                                 },

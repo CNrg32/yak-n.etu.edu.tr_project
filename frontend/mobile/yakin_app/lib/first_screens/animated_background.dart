@@ -1,5 +1,3 @@
-// lib/animated_background.dart
-
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -17,7 +15,7 @@ class _AnimatedBackgroundState extends State<AnimatedBackground>
   @override
   void initState() {
     super.initState();
-    // Animasyonun süresini belirliyoruz (örneğin, 10 saniye)
+
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 60))
           ..repeat();
@@ -50,7 +48,6 @@ class BlobsPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Blob'ların özelliklerini tanımlıyoruz
     List<Blob> blobs = [
       Blob(
         color: Colors.blue.withOpacity(0.5),

@@ -1,5 +1,3 @@
-// lib/empty_classrooms_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -12,13 +10,12 @@ class EmptyClassroomsScreen extends StatefulWidget {
 
 class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
   TextEditingController _classroomController = TextEditingController();
-  Map<String, Map<String, bool>>? schedule; // Haftanın günleri için
+  Map<String, Map<String, bool>>? schedule;
   bool isLoading = false;
   List<String> allClassrooms = [];
   List<String> filteredClassrooms = [];
   String? selectedClassroom;
 
-  // Haftanın günleri
   final List<String> _daysOfWeek = [
     'Monday',
     'Tuesday',
@@ -29,7 +26,6 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
     'Sunday',
   ];
 
-  // Seçili gün için zaman dilimlerini alır
   List<String> _currentDayTimeSlots(String day) {
     return [
       '09:00',
@@ -88,11 +84,10 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
         filteredClassrooms = [];
       } else {
         filteredClassrooms = allClassrooms
-            .where((classroom) =>
-                classroom.toLowerCase().contains(searchText))
+            .where((classroom) => classroom.toLowerCase().contains(searchText))
             .toList();
       }
-      schedule = null; // Yeni arama yapıldığında zaman çizelgesini sıfırla
+      schedule = null;
     });
   }
 
@@ -113,14 +108,12 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         Map<String, dynamic> scheduleData = data['schedule'] ?? {};
 
-        // Haftanın her günü için zaman dilimlerini al
         Map<String, Map<String, bool>> loadedSchedule = {};
         for (String day in _daysOfWeek) {
           if (scheduleData.containsKey(day)) {
-            loadedSchedule[day] = Map<String, bool>.from(
-                scheduleData[day].map((key, value) => MapEntry(key, value as bool)));
+            loadedSchedule[day] = Map<String, bool>.from(scheduleData[day]
+                .map((key, value) => MapEntry(key, value as bool)));
           } else {
-            // Eğer gün için program yoksa, tüm zaman dilimlerini boş olarak ayarla
             loadedSchedule[day] = {
               '09:00': false,
               '10:00': false,
@@ -169,7 +162,6 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Sınıf Arama Alanı
             TextField(
               controller: _classroomController,
               decoration: const InputDecoration(
@@ -179,7 +171,6 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            // Arama Sonuçları
             if (_classroomController.text.isNotEmpty && schedule == null)
               Expanded(
                 child: isLoading
@@ -192,8 +183,7 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
                               return ListTile(
                                 title: Text(classroom),
                                 onTap: () {
-                                  FocusScope.of(context)
-                                      .unfocus(); // Klavyeyi kapat
+                                  FocusScope.of(context).unfocus();
                                   _classroomController.text = classroom;
                                   filteredClassrooms = [];
                                   _loadSchedule(classroom);
@@ -205,7 +195,6 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
                             child: Text('No classrooms found.'),
                           ),
               ),
-            // Seçilen Sınıfın Zaman Çizelgesi
             if (schedule != null && selectedClassroom != null)
               Expanded(
                 child: SingleChildScrollView(
@@ -258,5 +247,4 @@ class _EmptyClassroomsScreenState extends State<EmptyClassroomsScreen> {
       ),
     );
   }
-
 }

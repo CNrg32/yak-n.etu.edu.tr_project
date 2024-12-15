@@ -1,5 +1,3 @@
-// lib/manage_class_schedules_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -14,8 +12,7 @@ class ManageClassSchedulesScreen extends StatefulWidget {
 class _ManageClassSchedulesScreenState
     extends State<ManageClassSchedulesScreen> {
   final TextEditingController _classroomController = TextEditingController();
-  
-  // Haftanın günleri
+
   final List<String> _daysOfWeek = [
     'Monday',
     'Tuesday',
@@ -26,7 +23,7 @@ class _ManageClassSchedulesScreenState
     'Sunday',
   ];
 
-  String _selectedDay = 'Monday'; // Varsayılan seçili gün
+  String _selectedDay = 'Monday';
   Map<String, bool> _currentDaySchedule = {
     '09:00': false,
     '10:00': false,
@@ -48,7 +45,6 @@ class _ManageClassSchedulesScreenState
     super.dispose();
   }
 
-  // Sınıf programını kaydetme fonksiyonu
   Future<void> _saveSchedule() async {
     String classroom = _classroomController.text.trim();
 
@@ -60,21 +56,18 @@ class _ManageClassSchedulesScreenState
     }
 
     try {
-      // Firestore'da sınıf dokümanını al veya oluştur
-      DocumentReference classroomDoc =
-          FirebaseFirestore.instance.collection('empty_classrooms').doc(classroom);
+      DocumentReference classroomDoc = FirebaseFirestore.instance
+          .collection('empty_classrooms')
+          .doc(classroom);
 
-      // Mevcut programı al
       DocumentSnapshot docSnapshot = await classroomDoc.get();
       Map<String, dynamic> scheduleData = {};
       if (docSnapshot.exists && docSnapshot.get('schedule') != null) {
         scheduleData = Map<String, dynamic>.from(docSnapshot.get('schedule'));
       }
 
-      // Seçili günün zaman çizelgesini güncelle
       scheduleData[_selectedDay] = _currentDaySchedule;
 
-      // Güncellenmiş veriyi Firestore'a kaydet
       await classroomDoc.set({
         'schedule': scheduleData,
       }, SetOptions(merge: true));
@@ -85,12 +78,12 @@ class _ManageClassSchedulesScreenState
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bir hata oluştu. Lütfen tekrar deneyin.')),
+        const SnackBar(
+            content: Text('Bir hata oluştu. Lütfen tekrar deneyin.')),
       );
     }
   }
 
-  // Sınıf programını yükleme fonksiyonu
   Future<void> _loadSchedule() async {
     String classroom = _classroomController.text.trim();
 
@@ -165,12 +158,10 @@ class _ManageClassSchedulesScreenState
     }
   }
 
-  // Gün seçiminde çalışacak fonksiyon
   void _onDayChanged(String? newDay) {
     if (newDay != null) {
       setState(() {
         _selectedDay = newDay;
-        // Mevcut sınıfın programını yeniden yükle
       });
       if (_selectedClassroom != null) {
         _loadSchedule();
@@ -181,15 +172,10 @@ class _ManageClassSchedulesScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sınıf Programlarını Yönet'),
-        backgroundColor: Colors.blueAccent,
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Sınıf Numarası Girişi
             TextField(
               controller: _classroomController,
               decoration: const InputDecoration(
@@ -199,11 +185,9 @@ class _ManageClassSchedulesScreenState
               keyboardType: TextInputType.text,
             ),
             const SizedBox(height: 10),
-            // Gün Seçimi ve Yükleme/Kaydetme Butonları
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Gün Seçici
                 DropdownButton<String>(
                   value: _selectedDay,
                   items: _daysOfWeek.map((day) {
@@ -214,13 +198,13 @@ class _ManageClassSchedulesScreenState
                   }).toList(),
                   onChanged: _onDayChanged,
                 ),
-                // Yükle ve Kaydet Butonları
                 Row(
                   children: [
                     ElevatedButton(
                       onPressed: _loadSchedule,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
                       ),
                       child: const Text('Yükle'),
                     ),
@@ -229,6 +213,7 @@ class _ManageClassSchedulesScreenState
                       onPressed: _saveSchedule,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blueAccent,
+                        foregroundColor: Colors.white,
                       ),
                       child: const Text('Kaydet'),
                     ),
@@ -237,7 +222,6 @@ class _ManageClassSchedulesScreenState
               ],
             ),
             const SizedBox(height: 20),
-            // Program Saatleri
             isLoading
                 ? const Expanded(
                     child: Center(
@@ -265,7 +249,8 @@ class _ManageClassSchedulesScreenState
                                   value: _currentDaySchedule[time],
                                   onChanged: (bool? value) {
                                     setState(() {
-                                      _currentDaySchedule[time] = value ?? false;
+                                      _currentDaySchedule[time] =
+                                          value ?? false;
                                     });
                                   },
                                 );

@@ -1,12 +1,10 @@
-// lib/login_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // SharedPreferences'ı içe aktarın
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yakin_app/admin/admin_screen.dart';
-import 'main_screen.dart'; // MainScreen'i içe aktarın
-import 'signup_screen.dart'; // SignupScreen'i içe aktarın
-import 'animated_background.dart'; // AnimatedBackground widget'ını içe aktarın
+import 'main_screen.dart';
+import 'signup_screen.dart';
+import 'animated_background.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,19 +38,16 @@ class _LoginScreenState extends State<LoginScreen> {
       if (userDoc.exists) {
         Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
         if (userData['password'] == password) {
-          // Giriş başarılı, login değerini kaydet
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setBool('login', true);
           await prefs.setString('studentNumber', studentNumber);
 
           if (userDoc.id == '0') {
-            // Admin kullanıcı, AdminScreen'e yönlendir
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const AdminScreen()),
             );
           } else {
-            // Normal kullanıcı, MainScreen'e yönlendir
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const MainScreen()),
@@ -80,12 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Arka planı Stack içinde yerleştiriyoruz
       body: Stack(
         children: [
-          // AnimatedBackground widget'ını arka planda kullanıyoruz
           const AnimatedBackground(),
-          // Form içeriklerini merkeze yerleştiriyoruz
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -94,7 +86,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Başlık
                     const Text(
                       'Giriş Yap',
                       style: TextStyle(
@@ -104,7 +95,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    // Öğrenci Numarası
                     TextField(
                       controller: _studentNumberController,
                       decoration: InputDecoration(
@@ -115,23 +105,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Border rengini mavi yapıyoruz
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors
-                                .blue, // Enabled durumunda border rengi mavi
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color:
-                                Colors.lightBlue, // Focused durumda açık mavi
+                            color: Colors.lightBlue,
                             width: 2.0,
                           ),
                         ),
@@ -140,7 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 16),
-                    // Şifre
                     TextField(
                       controller: _passwordController,
                       decoration: InputDecoration(
@@ -151,23 +138,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Border rengini mavi yapıyoruz
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors
-                                .blue, // Enabled durumunda border rengi mavi
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color:
-                                Colors.lightBlue, // Focused durumda açık mavi
+                            color: Colors.lightBlue,
                             width: 2.0,
                           ),
                         ),
@@ -176,7 +161,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: true,
                     ),
                     const SizedBox(height: 24),
-                    // Giriş Butonu
                     ElevatedButton(
                       onPressed: _login,
                       style: ButtonStyle(
@@ -184,11 +168,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             MaterialStateProperty.resolveWith<Color>(
                           (states) {
                             if (states.contains(MaterialState.pressed)) {
-                              return Colors
-                                  .lightBlue; // Butona basıldığında açık mavi
+                              return Colors.lightBlue;
                             }
-                            return Colors.white.withOpacity(
-                                0.8); // Normal durumda beyaz opaklık
+                            return Colors.white.withOpacity(0.8);
                           },
                         ),
                         padding: MaterialStateProperty.all(
@@ -210,7 +192,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Kayıt Ol Butonu
                     TextButton(
                       onPressed: () {
                         Navigator.push(

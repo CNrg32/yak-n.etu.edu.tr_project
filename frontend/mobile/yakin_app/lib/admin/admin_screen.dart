@@ -1,5 +1,3 @@
-// lib/admin_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yakin_app/admin/admin_menu.dart';
@@ -14,16 +12,13 @@ class AdminScreen extends StatefulWidget {
 }
 
 class _AdminScreenState extends State<AdminScreen> {
-
-
-  // Çıkış yapma fonksiyonu
   Future<void> _logout() async {
-    // Çıkış yapmadan önce onay isteyelim
     bool? confirmLogout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Çıkış Yap'),
-        content: const Text('Hesabınızdan çıkış yapmak istediğinize emin misiniz?'),
+        content:
+            const Text('Hesabınızdan çıkış yapmak istediğinize emin misiniz?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -39,10 +34,9 @@ class _AdminScreenState extends State<AdminScreen> {
 
     if (confirmLogout == true) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('login', false); // Giriş durumunu false yap
-      await prefs.remove('studentNumber'); // Öğrenci numarasını sil (isteğe bağlı)
+      await prefs.setBool('login', false);
+      await prefs.remove('studentNumber');
 
-      // LoginScreen'e yönlendir ve önceki sayfaları temizle
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -53,7 +47,6 @@ class _AdminScreenState extends State<AdminScreen> {
 
   int _selectedIndex = 0;
 
-  // Ekranlar listesi
   late List<Widget> _screens;
 
   @override
@@ -74,7 +67,6 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // AppBar ekleyebilirsiniz
       appBar: AppBar(
         title: const Text('Admin Paneli'),
         backgroundColor: Colors.blueAccent,

@@ -1,10 +1,8 @@
-// lib/signup_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // SharedPreferences'ı içe aktarın
-import 'main_screen.dart'; // MainScreen'i içe aktarın
-import 'animated_background.dart'; // AnimatedBackground widget'ını içe aktarın
+import 'package:shared_preferences/shared_preferences.dart';
+import 'main_screen.dart';
+import 'animated_background.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -15,7 +13,8 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _studentNumberController = TextEditingController();
+  final TextEditingController _studentNumberController =
+      TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -39,7 +38,6 @@ class _SignupScreenState extends State<SignupScreen> {
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
 
-      // Öğrenci numarasının benzersiz olup olmadığını kontrol edin
       DocumentSnapshot userDoc = await users.doc(studentNumber).get();
 
       if (userDoc.exists) {
@@ -49,7 +47,6 @@ class _SignupScreenState extends State<SignupScreen> {
         return;
       }
 
-      // Kullanıcıyı Firestore'a öğrenci numarasıyla kaydet
       await users.doc(studentNumber).set({
         'phone': phone,
         'studentNumber': studentNumber,
@@ -58,12 +55,10 @@ class _SignupScreenState extends State<SignupScreen> {
         'money': 0.0,
       });
 
-      // SharedPreferences ile 'login' değerini true olarak kaydet
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('login', true);
       await prefs.setString('studentNumber', studentNumber);
 
-      // Kayıt başarılı, MainScreen'e yönlendir
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MainScreen()),
@@ -71,7 +66,8 @@ class _SignupScreenState extends State<SignupScreen> {
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bir hata oluştu. Lütfen tekrar deneyin.')),
+        const SnackBar(
+            content: Text('Bir hata oluştu. Lütfen tekrar deneyin.')),
       );
     }
   }
@@ -79,12 +75,9 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Arka planı Stack içinde yerleştiriyoruz
       body: Stack(
         children: [
-          // AnimatedBackground widget'ını arka planda kullanıyoruz
           const AnimatedBackground(),
-          // Form içeriklerini merkeze yerleştiriyoruz
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
@@ -93,7 +86,6 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Başlık
                     const Text(
                       'Kayıt Ol',
                       style: TextStyle(
@@ -103,7 +95,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    // Telefon Numarası
                     TextField(
                       controller: _phoneController,
                       decoration: InputDecoration(
@@ -114,21 +105,21 @@ class _SignupScreenState extends State<SignupScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Border rengini mavi yapıyoruz
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Enabled durumunda border rengi mavi
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.lightBlue, // Focused durumda açık mavi
+                            color: Colors.lightBlue,
                             width: 2.0,
                           ),
                         ),
@@ -137,7 +128,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       keyboardType: TextInputType.phone,
                     ),
                     const SizedBox(height: 16),
-                    // Öğrenci Numarası
                     TextField(
                       controller: _studentNumberController,
                       decoration: InputDecoration(
@@ -148,21 +138,21 @@ class _SignupScreenState extends State<SignupScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Border rengini mavi yapıyoruz
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Enabled durumunda border rengi mavi
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.lightBlue, // Focused durumda açık mavi
+                            color: Colors.lightBlue,
                             width: 2.0,
                           ),
                         ),
@@ -171,7 +161,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       keyboardType: TextInputType.number,
                     ),
                     const SizedBox(height: 16),
-                    // İsim
                     TextField(
                       controller: _nameController,
                       decoration: InputDecoration(
@@ -182,21 +171,21 @@ class _SignupScreenState extends State<SignupScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Border rengini mavi yapıyoruz
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Enabled durumunda border rengi mavi
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.lightBlue, // Focused durumda açık mavi
+                            color: Colors.lightBlue,
                             width: 2.0,
                           ),
                         ),
@@ -204,7 +193,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       style: const TextStyle(color: Colors.black),
                     ),
                     const SizedBox(height: 16),
-                    // Şifre
                     TextField(
                       controller: _passwordController,
                       decoration: InputDecoration(
@@ -215,21 +203,21 @@ class _SignupScreenState extends State<SignupScreen> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Border rengini mavi yapıyoruz
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.blue, // Enabled durumunda border rengi mavi
+                            color: Colors.blue,
                             width: 2.0,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Colors.lightBlue, // Focused durumda açık mavi
+                            color: Colors.lightBlue,
                             width: 2.0,
                           ),
                         ),
@@ -238,20 +226,21 @@ class _SignupScreenState extends State<SignupScreen> {
                       obscureText: true,
                     ),
                     const SizedBox(height: 24),
-                    // Kayıt Ol Butonu
                     ElevatedButton(
                       onPressed: _signup,
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
                           (states) {
                             if (states.contains(MaterialState.pressed)) {
-                              return Colors.lightBlue; // Butona basıldığında açık mavi
+                              return Colors.lightBlue;
                             }
-                            return Colors.white.withOpacity(0.8); // Normal durumda beyaz opaklık
+                            return Colors.white.withOpacity(0.8);
                           },
                         ),
                         padding: MaterialStateProperty.all(
-                          const EdgeInsets.symmetric(horizontal: 100, vertical: 16),
+                          const EdgeInsets.symmetric(
+                              horizontal: 100, vertical: 16),
                         ),
                         shape: MaterialStateProperty.all(
                           RoundedRectangleBorder(
@@ -268,7 +257,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Geri Dön Butonu
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);

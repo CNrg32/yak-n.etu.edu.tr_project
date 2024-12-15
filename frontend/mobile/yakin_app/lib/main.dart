@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // SharedPreferences'ı ekleyin
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'first_screens/login_screen.dart';
 import 'first_screens/main_screen.dart';
@@ -12,7 +12,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // SharedPreferences ile login durumunu kontrol edin
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool? isLoggedIn = prefs.getBool('login');
 
@@ -27,6 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: isLoggedIn ? const MainScreen() : const LoginScreen(),
     );
   }

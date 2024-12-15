@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'edit_syllabus_screen.dart'; // Düzenleme ekranını içe aktarın
+import 'edit_syllabus_screen.dart';
 
 class SyllabusScreen extends StatefulWidget {
   const SyllabusScreen({super.key});
@@ -32,13 +32,11 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
   }
 
   Future<void> _loadStudentNumberAndSyllabus() async {
-    // SharedPreferences'tan öğrenci numarasını al
     SharedPreferences prefs = await SharedPreferences.getInstance();
     studentNumber = prefs.getString('studentNumber');
 
     if (studentNumber != null) {
       try {
-        // Firestore'dan ders programını al
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(studentNumber)
@@ -67,7 +65,6 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
     }
   }
 
-  // Ders programını güncelleme sonrasında yeniden yüklemek için
   void _refreshSyllabus() {
     setState(() {
       isLoading = true;
@@ -96,7 +93,6 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
           backgroundColor: Colors.white,
           foregroundColor: Colors.blue,
           onPressed: () async {
-            // Düzenleme ekranına git ve geri döndüğünde ders programını yenile
             await Navigator.push(
               context,
               MaterialPageRoute(
@@ -109,10 +105,8 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
       );
     }
 
-    // En fazla ders sayısını bulmak için
     int maxLessonsPerDay = 0;
 
-    // Günlere göre dersleri hazırlayın
     final lessonsPerDay = <String, List<Map<String, dynamic>>>{};
 
     for (var day in daysOfWeek) {
@@ -124,7 +118,6 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
       }
     }
 
-    // DataRows'u oluşturun
     final dataRows = List<DataRow>.generate(
       maxLessonsPerDay,
       (lessonIndex) => DataRow(
@@ -160,7 +153,7 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
               );
             } else {
               return const DataCell(
-                SizedBox.shrink(), // Boş hücre
+                SizedBox.shrink(),
               );
             }
           },
@@ -168,7 +161,6 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
       ),
     );
 
-    // DataColumns'u oluşturun
     final dataColumns = daysOfWeek
         .map(
           (day) => DataColumn(
@@ -190,9 +182,9 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal, // Yatay kaydırma
+          scrollDirection: Axis.horizontal,
           child: SingleChildScrollView(
-            scrollDirection: Axis.vertical, // Dikey kaydırma
+            scrollDirection: Axis.vertical,
             child: DataTable(
               columnSpacing: 30,
               headingRowHeight: 80,
@@ -211,7 +203,6 @@ class _SyllabusScreenState extends State<SyllabusScreen> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.blue,
         onPressed: () async {
-          // Düzenleme ekranına git ve geri döndüğünde ders programını yenile
           await Navigator.push(
             context,
             MaterialPageRoute(

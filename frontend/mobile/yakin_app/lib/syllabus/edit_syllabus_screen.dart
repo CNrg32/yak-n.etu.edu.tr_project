@@ -24,7 +24,6 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
     "Sunday"
   ];
 
-  // TextEditingController'ları saklamak için
   Map<String, List<Map<String, TextEditingController>>> controllers = {};
 
   @override
@@ -68,7 +67,6 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
     }
   }
 
-  // TextEditingController'ları başlatmak için
   void _initializeControllers() {
     for (var day in daysOfWeek) {
       var dayLessons = syllabusData[day] as List<dynamic>? ?? [];
@@ -87,7 +85,6 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
     }
   }
 
-  // Ders eklemek için fonksiyon
   void _addLesson(String day) {
     setState(() {
       syllabusData[day] ??= [];
@@ -96,7 +93,6 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
         'time': '',
       });
 
-      // Yeni kontrolörleri oluştur
       var lessonNameController = TextEditingController();
       var timeController = TextEditingController();
 
@@ -108,21 +104,17 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
     });
   }
 
-  // Ders silmek için fonksiyon
   void _removeLesson(String day, int index) {
     setState(() {
       (syllabusData[day] as List).removeAt(index);
 
-      // Kontrolörleri de kaldır
       controllers[day]?.removeAt(index);
     });
   }
 
-  // Ders programını kaydetmek için fonksiyon
   Future<void> _saveSyllabus() async {
     if (studentNumber != null) {
       try {
-        // Kontrolörlerden değerleri al ve syllabusData'yı güncelle
         for (var day in daysOfWeek) {
           var dayControllers = controllers[day] ?? [];
           var lessons = [];
@@ -149,7 +141,7 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
           const SnackBar(content: Text('Ders programı kaydedildi.')),
         );
 
-        Navigator.pop(context); // Geri dön
+        Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Hata: $e')),
@@ -215,8 +207,7 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
                               controller: timeController,
                             ),
                             IconButton(
-                              icon: const Icon(Icons.delete,
-                                  color: Colors.red),
+                              icon: const Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
                                 _removeLesson(day, index);
                               },
@@ -231,8 +222,14 @@ class _EditSyllabusScreenState extends State<EditSyllabusScreen> {
                   onPressed: () {
                     _addLesson(day);
                   },
-                  icon: const Icon(Icons.add, color: Colors.blue,),
-                  label: const Text('Ders Ekle', style: TextStyle(color: Colors.blue),),
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.blue,
+                  ),
+                  label: const Text(
+                    'Ders Ekle',
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
               ],
             );

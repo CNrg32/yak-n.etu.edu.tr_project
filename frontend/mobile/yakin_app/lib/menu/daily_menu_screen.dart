@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Tarih formatlama için
-import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore için
-import '../admin/edit_daily_menu_screen.dart'; // Yemek ekleme ekranını içe aktarın
+import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../admin/edit_daily_menu_screen.dart';
 
-// Model class for Menu Items
 class MenuItem {
   final String type;
   final String name;
@@ -11,7 +10,6 @@ class MenuItem {
 
   MenuItem({required this.type, required this.name, required this.calories});
 
-  // Firestore'dan veri çekerken kullanmak için bir factory constructor ekleyelim
   factory MenuItem.fromMap(Map<String, dynamic> data) {
     return MenuItem(
       type: data['type'] ?? '',
@@ -20,7 +18,6 @@ class MenuItem {
     );
   }
 
-  // Firestore'a veri kaydederken kullanmak için bir toMap() fonksiyonu ekleyelim
   Map<String, dynamic> toMap() {
     return {
       'type': type,
@@ -49,7 +46,6 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
     _fetchMenuForSelectedDate();
   }
 
-  // Tarih değiştiğinde menüyü yeniden fetch etmek için
   void _onDateChanged(DateTime date) {
     setState(() {
       _selectedDate = date;
@@ -58,7 +54,6 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
     _fetchMenuForSelectedDate();
   }
 
-  // Firestore'dan seçilen tarih için menüyü çeken fonksiyon
   Future<void> _fetchMenuForSelectedDate() async {
     String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
 
@@ -92,7 +87,6 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
     }
   }
 
-  // Tarih seçici fonksiyonu
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -105,19 +99,16 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
     }
   }
 
-  // Önceki güne gitme fonksiyonu
   void _goToPreviousDay() {
     DateTime previousDay = _selectedDate.subtract(const Duration(days: 1));
     _onDateChanged(previousDay);
   }
 
-  // Sonraki güne gitme fonksiyonu
   void _goToNextDay() {
     DateTime nextDay = _selectedDate.add(const Duration(days: 1));
     _onDateChanged(nextDay);
   }
 
-  // Menüdeki değişikliklerden sonra ekranı yenilemek için
   void _refreshMenu() {
     setState(() {
       isLoading = true;
@@ -133,16 +124,13 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Tarih ve navigasyon okları
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Önceki gün
                 IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: _goToPreviousDay,
                 ),
-                // Tarih gösterimi ve tarih seçici
                 TextButton(
                   onPressed: () => _selectDate(context),
                   child: Text(
@@ -155,7 +143,6 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
                     ),
                   ),
                 ),
-                // Sonraki gün
                 IconButton(
                   icon: const Icon(Icons.arrow_forward_ios),
                   onPressed: _goToNextDay,
@@ -163,7 +150,6 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            // Menü verilerini göster
             if (isLoading)
               const Expanded(
                 child: Center(
@@ -186,9 +172,8 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
                         padding: const EdgeInsets.all(12.0),
                         child: Row(
                           children: [
-                            // Yemek Türü
                             SizedBox(
-                              width: 120, // Hizalama için sabit genişlik
+                              width: 120,
                               height: 40,
                               child: Container(
                                 alignment: Alignment.centerLeft,
@@ -201,7 +186,6 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
                                 ),
                               ),
                             ),
-                            // Yemek Adı
                             Expanded(
                               child: Text(
                                 menuItem.name,
@@ -210,7 +194,6 @@ class _DailyMenuScreenState extends State<DailyMenuScreen> {
                                 ),
                               ),
                             ),
-                            // Kalori
                             Text(
                               '${menuItem.calories} kcal',
                               style: const TextStyle(

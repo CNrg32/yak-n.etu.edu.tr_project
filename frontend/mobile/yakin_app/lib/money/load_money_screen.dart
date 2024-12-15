@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'add_money_screen.dart';
-import 'payment_history_screen.dart'; // PaymentHistoryScreen'i içe aktarın
+import 'payment_history_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -64,7 +64,6 @@ class _LoadMoneyScreenState extends State<LoadMoneyScreen> {
     }
   }
 
-  // Add Money ekranından geri döndüğünde bakiyeyi yenilemek için
   void _refreshBalance() {
     setState(() {
       isLoading = true;
@@ -92,7 +91,6 @@ class _LoadMoneyScreenState extends State<LoadMoneyScreen> {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-              // Balance Circular Chart
               SizedBox(
                 height: 200,
                 width: 200,
@@ -100,7 +98,7 @@ class _LoadMoneyScreenState extends State<LoadMoneyScreen> {
                   alignment: Alignment.center,
                   children: [
                     CircularProgressIndicator(
-                      value: (balance % 1000) / 1000, // Örnek değer
+                      value: (balance % 1000) / 1000,
                       strokeWidth: 20,
                       backgroundColor: Colors.grey[300],
                       color: Colors.blueAccent,
@@ -122,10 +120,8 @@ class _LoadMoneyScreenState extends State<LoadMoneyScreen> {
                     color: Colors.grey),
               ),
               const SizedBox(height: 16),
-              // Add Money Button
               ElevatedButton(
                 onPressed: () async {
-                  // AddMoneyScreen'e git ve geri döndüğünde bakiyeyi yenile
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -145,7 +141,6 @@ class _LoadMoneyScreenState extends State<LoadMoneyScreen> {
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: () {
-                  // Payment History Screen'e yönlendirin
                   Navigator.push(
                     context,
                     MaterialPageRoute(

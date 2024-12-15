@@ -12,21 +12,17 @@ class AddMoneyScreen extends StatefulWidget {
 
 class _AddMoneyScreenState extends State<AddMoneyScreen>
     with SingleTickerProviderStateMixin {
-  // Kart bilgileri için kontrolörler
   final TextEditingController _cardNumberController = TextEditingController();
   final TextEditingController _expiryDateController = TextEditingController();
   final TextEditingController _cvvController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _cardHolderNameController =
-      TextEditingController(); // Kart sahibi adı için
+      TextEditingController();
 
-  // Kartın ön yüzünü veya arka yüzünü göstermek için kontrol
   bool isFront = true;
 
-  // Öğrenci numarası
   String? studentNumber;
 
-  // Son kullanma tarihi önceki uzunluğu
   int _prevExpiryDateLength = 0;
 
   @override
@@ -40,7 +36,6 @@ class _AddMoneyScreenState extends State<AddMoneyScreen>
     studentNumber = prefs.getString('studentNumber');
   }
 
-  // Kart numarasını formatlamak için
   String get formattedCardNumber {
     String text = _cardNumberController.text.replaceAll(' ', '');
     List<String> parts = [];
@@ -50,96 +45,90 @@ class _AddMoneyScreenState extends State<AddMoneyScreen>
     return parts.join(' ');
   }
 
-  // CVV alanına odaklanıldığında kartın arka yüzünü göstermek için
   void _toggleCardFace() {
     setState(() {
       isFront = !isFront;
     });
   }
 
-  // Yükleme işlemini gerçekleştirmek için
- // Yükleme işlemini gerçekleştirmek için
-Future<void> _loadMoney() async {
-  double amount = double.tryParse(_amountController.text.trim()) ?? 0.0;
+  Future<void> _loadMoney() async {
+    double amount = double.tryParse(_amountController.text.trim()) ?? 0.0;
 
-  if (amount <= 0) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Lütfen geçerli bir tutar girin.')),
-    );
-    return;
+    if (amount <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Lütfen geçerli bir tutar girin.')),
+      );
+      return;
+    }
+
+    if (_cardNumberController.text.trim().isEmpty ||
+        _expiryDateController.text.trim().isEmpty ||
+        _cvvController.text.trim().isEmpty ||
+        _cardHolderNameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Lütfen tüm kart bilgilerini girin.')),
+      );
+      return;
+    }
+
+    if (studentNumber == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Öğrenci numarası bulunamadı.')),
+      );
+      return;
+    }
+
+    try {
+      DocumentReference userRef =
+          FirebaseFirestore.instance.collection('users').doc(studentNumber);
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot userSnapshot = await transaction.get(userRef);
+
+        if (!userSnapshot.exists) {
+          throw Exception('Kullanıcı bulunamadı.');
+        }
+
+        double currentBalance = userSnapshot.get('money')?.toDouble() ?? 0.0;
+        double newBalance = currentBalance + amount;
+
+        transaction.update(userRef, {'money': newBalance});
+      });
+
+      await _saveTransactionToHistory(amount);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bakiye başarıyla yüklendi.')),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Hata: $e')),
+      );
+    }
   }
 
-  if (_cardNumberController.text.trim().isEmpty ||
-      _expiryDateController.text.trim().isEmpty ||
-      _cvvController.text.trim().isEmpty ||
-      _cardHolderNameController.text.trim().isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Lütfen tüm kart bilgilerini girin.')),
-    );
-    return;
+  Future<void> _saveTransactionToHistory(double amount) async {
+    String cardNumber = _cardNumberController.text.trim();
+    String maskedCardNumber = cardNumber.replaceRange(
+        0, cardNumber.length - 4, '*' * (cardNumber.length - 4));
+
+    Map<String, dynamic> transactionData = {
+      'cardNumber': maskedCardNumber,
+      'amount': amount,
+      'date': FieldValue.serverTimestamp(),
+    };
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(studentNumber)
+        .collection('payment_history')
+        .add(transactionData);
   }
-
-  if (studentNumber == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Öğrenci numarası bulunamadı.')),
-    );
-    return;
-  }
-
-  try {
-    DocumentReference userRef =
-        FirebaseFirestore.instance.collection('users').doc(studentNumber);
-
-    // Firestore Transaction kullanarak bakiyeyi güncelleyin
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot userSnapshot = await transaction.get(userRef);
-
-      if (!userSnapshot.exists) {
-        throw Exception('Kullanıcı bulunamadı.');
-      }
-
-      double currentBalance = userSnapshot.get('money')?.toDouble() ?? 0.0;
-      double newBalance = currentBalance + amount;
-
-      transaction.update(userRef, {'money': newBalance});
-    });
-
-    // Ödeme geçmişine kaydet
-    await _saveTransactionToHistory(amount);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Bakiye başarıyla yüklendi.')),
-    );
-
-    Navigator.pop(context); // Önceki ekrana dön
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Hata: $e')),
-    );
-  }
-}
-
-// Ödeme geçmişine kaydetmek için fonksiyon
-Future<void> _saveTransactionToHistory(double amount) async {
-  String cardNumber = _cardNumberController.text.trim();
-  String maskedCardNumber = cardNumber.replaceRange(0, cardNumber.length - 4, '*' * (cardNumber.length - 4));
-
-  Map<String, dynamic> transactionData = {
-    'cardNumber': maskedCardNumber,
-    'amount': amount,
-    'date': FieldValue.serverTimestamp(),
-  };
-
-  await FirebaseFirestore.instance
-      .collection('users')
-      .doc(studentNumber)
-      .collection('payment_history')
-      .add(transactionData);
-}
 
   @override
   Widget build(BuildContext context) {
-    // Kartın boyutları
     double cardWidth = MediaQuery.of(context).size.width * 0.8;
     double cardHeight = 200;
 
@@ -151,20 +140,16 @@ Future<void> _saveTransactionToHistory(double amount) async {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            // Kart Görseli
             GestureDetector(
               onTap: _toggleCardFace,
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 500),
-                transitionBuilder:
-                    (Widget child, Animation<double> animation) {
-                  final rotate =
-                      Tween(begin: pi, end: 0.0).animate(animation);
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  final rotate = Tween(begin: pi, end: 0.0).animate(animation);
                   return AnimatedBuilder(
                     animation: rotate,
                     child: child,
                     builder: (context, child) {
-                      // Kartın yamuk görünmesini engellemek için tilt'i kaldırdık
                       final value = rotate.value;
                       return Transform(
                         transform: Matrix4.rotationY(value),
@@ -180,7 +165,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
               ),
             ),
             const SizedBox(height: 16),
-            // Kart Bilgileri Giriş Alanları
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: Column(
@@ -210,7 +194,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
                       if (!isFront) _toggleCardFace();
                     },
                     onChanged: (value) {
-                      // Son kullanma tarihi formatlaması
                       if (value.length == 2 &&
                           _prevExpiryDateLength < value.length) {
                         _expiryDateController.text = '$value/';
@@ -220,8 +203,7 @@ Future<void> _saveTransactionToHistory(double amount) async {
                               offset: _expiryDateController.text.length),
                         );
                       }
-                      _prevExpiryDateLength =
-                          _expiryDateController.text.length;
+                      _prevExpiryDateLength = _expiryDateController.text.length;
                       setState(() {});
                     },
                   ),
@@ -261,7 +243,10 @@ Future<void> _saveTransactionToHistory(double amount) async {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _loadMoney,
-                    child: const Text('Load', style: TextStyle(color: Colors.blue),),
+                    child: const Text(
+                      'Load',
+                      style: TextStyle(color: Colors.blue),
+                    ),
                   ),
                 ],
               ),
@@ -272,7 +257,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
     );
   }
 
-  // Kartın ön yüzünü oluşturmak için
   Widget _buildFrontCard(double width, double height) {
     return Container(
       key: const ValueKey(true),
@@ -284,7 +268,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
       ),
       child: Stack(
         children: [
-          // Kart Numarası
           Positioned(
             top: height * 0.4,
             left: 20,
@@ -299,7 +282,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
               ),
             ),
           ),
-          // Son Kullanma Tarihi
           Positioned(
             bottom: 20,
             left: 20,
@@ -313,7 +295,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
               ),
             ),
           ),
-          // Kart Sahibinin Adı
           Positioned(
             bottom: 20,
             right: 20,
@@ -332,7 +313,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
     );
   }
 
-  // Kartın arka yüzünü oluşturmak için
   Widget _buildBackCard(double width, double height) {
     return Container(
       key: const ValueKey(false),
@@ -344,7 +324,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
       ),
       child: Stack(
         children: [
-          // Siyah Şerit
           Positioned(
             top: height * 0.1,
             child: Container(
@@ -353,7 +332,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
               color: Colors.black,
             ),
           ),
-          // CVV
           Positioned(
             top: height * 0.4,
             right: 20,
@@ -372,7 +350,6 @@ Future<void> _saveTransactionToHistory(double amount) async {
               ),
             ),
           ),
-          // Kart Sahibinin İmzası (Örnek)
           Positioned(
             bottom: 20,
             left: 20,

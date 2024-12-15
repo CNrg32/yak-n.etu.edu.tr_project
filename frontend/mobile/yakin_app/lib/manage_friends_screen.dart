@@ -56,11 +56,10 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
     }
   }
 
-  // Arkadaş ekleme fonksiyonu
   Future<void> _addFriend() async {
     String friendStudentNumber = '';
     String friendPhoneNumber = '';
-    final parentContext = context; // Üst context'i kaydedin
+    final parentContext = context;
 
     showDialog(
       context: context,
@@ -92,18 +91,15 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
           actions: [
             TextButton(
               onPressed: () async {
-                Navigator.of(context).pop(); // Dialogu kapat
+                Navigator.of(context).pop();
 
-                if (friendStudentNumber.isEmpty ||
-                    friendPhoneNumber.isEmpty) {
+                if (friendStudentNumber.isEmpty || friendPhoneNumber.isEmpty) {
                   ScaffoldMessenger.of(parentContext).showSnackBar(
-                    const SnackBar(
-                        content: Text('Please enter both values.')),
+                    const SnackBar(content: Text('Please enter both values.')),
                   );
                   return;
                 }
 
-                // Kullanıcıyı arayalım
                 QuerySnapshot userSnapshot = await FirebaseFirestore.instance
                     .collection('users')
                     .where('studentNumber', isEqualTo: friendStudentNumber)
@@ -111,12 +107,10 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
                     .get();
 
                 if (userSnapshot.docs.isNotEmpty) {
-                  // Kullanıcı bulundu
                   var friendData =
                       userSnapshot.docs.first.data() as Map<String, dynamic>;
                   String foundStudentNumber = friendData['studentNumber'] ?? '';
 
-                  // Zaten arkadaş mı?
                   bool alreadyFriend = friends.any((friend) =>
                       friend['studentNumber'] == foundStudentNumber);
 
@@ -128,16 +122,15 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
                     return;
                   }
 
-                  // Kendi kendini eklemeye çalışıyor mu?
                   if (foundStudentNumber == studentNumber) {
                     ScaffoldMessenger.of(parentContext).showSnackBar(
                       const SnackBar(
-                          content: Text('You cannot add yourself as a friend.')),
+                          content:
+                              Text('You cannot add yourself as a friend.')),
                     );
                     return;
                   }
 
-                  // Arkadaşı ekleyelim
                   await FirebaseFirestore.instance
                       .collection('users')
                       .doc(studentNumber)
@@ -149,7 +142,6 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
                     'surname': friendData['surname'] ?? '',
                     'phone': friendData['phone'] ?? '',
                     'email': friendData['email'] ?? '',
-                    // Diğer gerekli bilgiler
                   });
 
                   setState(() {
@@ -175,7 +167,7 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Dialogu kapat
+                Navigator.of(context).pop();
               },
               child: const Text('Cancel'),
             ),
@@ -185,7 +177,6 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
     );
   }
 
-  // Arkadaşı silme fonksiyonu
   Future<void> _removeFriend(String friendStudentNumber) async {
     try {
       await FirebaseFirestore.instance
@@ -223,14 +214,15 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Arkadaş Ekleme Butonu
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton.icon(
                 onPressed: _addFriend,
                 icon: const Icon(Icons.person_add, color: Colors.blue),
-                label: const Text('Add Friend', style: TextStyle(color: Colors.blue),),
-                
+                label: const Text(
+                  'Add Friend',
+                  style: TextStyle(color: Colors.blue),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -275,7 +267,10 @@ class _ManageFriendsScreenState extends State<ManageFriendsScreen> {
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.redAccent,
                                 ),
-                                child: const Text("Remove", style: TextStyle(color: Colors.white),),
+                                child: const Text(
+                                  "Remove",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ),
                           ]);

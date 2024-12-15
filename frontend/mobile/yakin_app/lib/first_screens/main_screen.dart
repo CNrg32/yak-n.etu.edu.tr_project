@@ -4,8 +4,8 @@ import '../menu/daily_menu_screen.dart';
 import '../money/load_money_screen.dart';
 import '../manage_friends_screen.dart';
 import '../empty_classrooms_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // SharedPreferences'ı ekleyin
-import 'login_screen.dart'; // LoginScreen'i içe aktarın
+import 'package:shared_preferences/shared_preferences.dart';
+import 'login_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -25,14 +25,13 @@ class _MainScreenState extends State<MainScreen> {
     const EmptyClassroomsScreen(),
   ];
 
-  // Çıkış yapma fonksiyonu
   Future<void> _logout() async {
-    // Çıkış yapmadan önce onay isteyelim
     bool? confirmLogout = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Çıkış Yap'),
-        content: const Text('Hesabınızdan çıkış yapmak istediğinize emin misiniz?'),
+        content:
+            const Text('Hesabınızdan çıkış yapmak istediğinize emin misiniz?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -48,10 +47,9 @@ class _MainScreenState extends State<MainScreen> {
 
     if (confirmLogout == true) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('login', false); // Giriş durumunu false yap
-      await prefs.remove('studentNumber'); // Öğrenci numarasını sil (isteğe bağlı)
+      await prefs.setBool('login', false);
+      await prefs.remove('studentNumber');
 
-      // LoginScreen'e yönlendir ve önceki sayfaları temizle
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
