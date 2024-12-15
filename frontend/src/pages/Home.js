@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // For quick action navigation
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Home.css'; // Custom CSS for styling
-import { FaWallet, FaBook, FaList } from 'react-icons/fa'; // Import Font Awesome icons
+import './Home.css';
+import { FaWallet, FaBook, FaList } from 'react-icons/fa';
+import { getCurrentUserId } from '../utils/userUtils';
 
 const Home = () => {
-    const [userName, setUserName] = useState(''); // To store user[1].name
-    const [userBalance, setUserBalance] = useState(0); // Balance for user 1
-    const [enrolledCourses, setEnrolledCourses] = useState(0); // Number of enrolled courses for user 1
-    const [courseNames, setCourseNames] = useState([]); // Names of the enrolled courses for user 1
+    const [userName, setUserName] = useState('');
+    const [userBalance, setUserBalance] = useState(0);
+    const [enrolledCourses, setEnrolledCourses] = useState(0);
+    const [courseNames, setCourseNames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -16,47 +17,54 @@ const Home = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            const userId = getCurrentUserId();
+
+            if (!userId) {
+                setError('No user ID found. Redirecting to login...');
+                setTimeout(() => navigate('/login'), 2000);
+                return;
+            }
+
             try {
-                // Fetch user information for user 1
-                const usersResponse = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
-                const user = usersResponse.data.find(user => user.user_id === 1);
+                // Fetch user data and balance
+                const [usersResponse, balanceResponse, enrollmentsResponse, coursesResponse] = await Promise.all([
+                    axios.get(`${process.env.REACT_APP_API_URL}/users`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/student_cards`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/enrollments`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/courses`),
+                ]);
+
+                const user = usersResponse.data.find(user => user.user_id === parseInt(userId));
                 setUserName(user ? user.name : 'User');
 
-                // Fetch balance for user 1 from student_cards
-                const balanceResponse = await axios.get(`${process.env.REACT_APP_API_URL}/student_cards`);
-                const userCard = balanceResponse.data.find(card => card.user_id === 1);
+                const userCard = balanceResponse.data.find(card => card.user_id === parseInt(userId));
                 setUserBalance(userCard ? parseFloat(userCard.balance) : 0);
 
-                // Fetch enrolled courses for user 1
-                const enrollmentsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/enrollments`);
-                const userEnrollments = enrollmentsResponse.data.filter(enrollment => enrollment.user_id === 1);
+                const userEnrollments = enrollmentsResponse.data.filter(enrollment => enrollment.user_id === parseInt(userId));
                 setEnrolledCourses(userEnrollments.length);
 
-                // Fetch course names for the enrolled courses
                 const courseIds = userEnrollments.map(enrollment => enrollment.course_id);
-                const coursesResponse = await axios.get(`${process.env.REACT_APP_API_URL}/courses`);
                 const enrolledCourseNames = coursesResponse.data
                     .filter(course => courseIds.includes(course.course_id))
                     .map(course => course.course_name);
-
                 setCourseNames(enrolledCourseNames);
             } catch (err) {
-                setError('Error fetching data.');
-                console.error(err);
+                console.error('Error fetching data:', err);
+                setError('Failed to load data. Please try again.');
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, []);
+    }, [navigate]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="loading">Loading...</div>;
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <div className="error">{error}</div>;
     }
 
     return (

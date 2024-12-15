@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './DailyMenu.css'; // Make sure to create or update this CSS file
+import { setCurrentUserId } from '../utils/userUtils';
 
 const DailyMenu = () => {
     const [menuData, setMenuData] = useState([]);

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Users.css';
+import { getCurrentUserId,clearCurrentUserId } from '../utils/userUtils';
 
 const User = () => {
     const [user, setUser] = useState(null);
@@ -10,9 +11,10 @@ const User = () => {
 
     useEffect(() => {
         const fetchUser = async () => {
+            const userId = getCurrentUserId();
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
-                const currentUser = response.data.find(user => user.user_id === 1);
+                const currentUser = response.data.find(user => user.user_id === parseInt(userId) );
                 setUser(currentUser);
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -23,6 +25,7 @@ const User = () => {
 
     const handleLogout = () => {
         console.log('User logged out');
+        clearCurrentUserId();
         navigate('/login');
     };
 

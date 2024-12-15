@@ -3,6 +3,7 @@ import './ValidatePaymentMethod.css';
 import { FaCreditCard, FaUniversity } from 'react-icons/fa';
 import card from '../assets/card.png';
 import axios from 'axios';
+import { setCurrentUserId } from '../utils/userUtils';
 
 const ValidatePaymentMethod = () => {
     const [activePayment, setActivePayment] = useState('Card');

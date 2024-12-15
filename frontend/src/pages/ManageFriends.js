@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ManageFriends.css';
+import { getCurrentUserId } from '../utils/userUtils';
 
 const ManageFriends = () => {
     const [friends, setFriends] = useState([]);
@@ -12,8 +13,8 @@ const ManageFriends = () => {
     useEffect(() => {
         const fetchFriends = async () => {
             try {
-                const userId = 1; // Replace with the logged-in user's ID
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/friends/${userId}`);
+                 // Replace with the logged-in user's ID
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/friends/${getCurrentUserId() }`);
                 setFriends(
                     response.data.map((friend) => ({
                         name: friend.friendName,

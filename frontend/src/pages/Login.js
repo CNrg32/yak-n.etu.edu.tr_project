@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css'; // Optional CSS for styling
+import { setCurrentUserId } from '../utils/userUtils';
+import axios from 'axios';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const navigate = useNavigate(); // Initialize the navigate function
 
@@ -27,18 +30,35 @@ const Login = () => {
         }
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        console.log('Login successful with email:', email);
 
-        // Simulate login logic
-        const isAuthenticated = true; // Replace with real authentication logic
-        if (isAuthenticated) {
-            navigate('/'); // Redirect to the home page
-        } else {
-            alert('Invalid login credentials');
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, {
+                email: email.trim(),
+                password: password.trim(),
+            });
+            console.log("Login Response:", response.data); // Debugging
+
+            const { userId } = response.data;
+            setCurrentUserId(userId);
+            navigate('/');
+        } catch (error) {
+            console.error("Login Error:", error);
+
+            if (error.response) {
+                console.error("Response Data:", error.response.data); // Backend error message
+                setErrorMessage(error.response.data.message || 'An unexpected error occurred.');
+            } else {
+                setErrorMessage('An unexpected error occurred. Please try again.');
+            }
         }
     };
+
+
+
+
+
 
     const handleSignUpRedirect = () => {
         navigate('/signup'); // Redirect to the sign-up page
@@ -62,6 +82,7 @@ const Login = () => {
                     onChange={handlePasswordChange}
                     required
                 />
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
                 <button type="submit" disabled={isButtonDisabled}>
                     Login
                 </button>

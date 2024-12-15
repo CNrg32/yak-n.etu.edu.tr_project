@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import './StudentCards.css';
+import { getCurrentUserId } from '../utils/userUtils';
 
 const COLORS = ['#FF6384', '#36A2EB'];
 
@@ -11,19 +12,29 @@ const StudentCards = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchStudentCard = async () => {
+            const userId = getCurrentUserId();
+
+            if (!userId) {
+                setError('No user ID found. Redirecting to login...');
+                setTimeout(() => navigate('/login'), 2000);
+                return;
+            }
+
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/student_cards`);
-                const userCard = response.data.find(card => card.user_id === 1);
+                const userCard = response.data.find(card => card.user_id === parseInt(userId));
+
                 if (userCard) {
                     setBalance(parseFloat(userCard.balance));
                 } else {
-                    setError('User with ID 1 not found.');
+                    setError('No student card found for this user.');
                 }
             } catch (err) {
+                console.error('Error fetching student card data:', err);
                 setError('Error fetching student card data.');
             } finally {
                 setLoading(false);
@@ -31,7 +42,7 @@ const StudentCards = () => {
         };
 
         fetchStudentCard();
-    }, []);
+    }, [navigate]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -88,11 +99,10 @@ const StudentCards = () => {
                             fontWeight: 'bold',
                             borderRadius: '8px',
                         }}
-                        onClick={() => navigate('/student-cards/validate-payment-method')} // Navigate on click
+                        onClick={() => navigate('/student-cards/validate-payment-method')}
                     >
                         Add Money
                     </button>
-                   
                 </div>
             </div>
         </div>

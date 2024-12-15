@@ -4,9 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { setCurrentUserId } from './utils/userUtils';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+setCurrentUserId(1);
 root.render(
   <React.StrictMode>
     <App />

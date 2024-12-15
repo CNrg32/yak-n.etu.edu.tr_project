@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './EmptyClassrooms.css'; // Özel CSS dosyasını import edin
+import { setCurrentUserId } from '../utils/userUtils';
 
 const EmptyClassrooms = () => {
     const [classrooms, setClassrooms] = useState([]);

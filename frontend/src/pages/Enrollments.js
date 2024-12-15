@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Syllabus.css'; // Reuse the CSS file for styling
+import { getCurrentUserId } from '../utils/userUtils';
 
 const Enrollments = () => {
     const [schedule, setSchedule] = useState([]); // Weekly schedule
@@ -12,14 +13,22 @@ const Enrollments = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            const userId = getCurrentUserId();
+
+            if (!userId) {
+                setError('No user ID found. Redirecting to login...');
+                setTimeout(() => window.location.href = '/login', 2000);
+                return;
+            }
+
             try {
-                // Fetch enrollments for user_id = 1
+                // Fetch enrollments for the current user
                 const enrollmentsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/enrollments`);
-                const userEnrollments = enrollmentsResponse.data.filter(enrollment => enrollment.user_id === 1);
+                const userEnrollments = enrollmentsResponse.data.filter(enrollment => enrollment.user_id === parseInt(userId));
 
                 console.log('User Enrollments:', userEnrollments); // Debug log
 
-                // Get course IDs for user 1
+                // Get course IDs for the current user
                 const courseIds = userEnrollments.map(enrollment => enrollment.course_id);
 
                 console.log('Course IDs:', courseIds); // Debug log
@@ -53,7 +62,7 @@ const Enrollments = () => {
                 setSchedule(blankSchedule);
             } catch (err) {
                 setError('Error fetching data.');
-                console.error(err);
+                console.error('Error fetching enrollments or courses:', err);
             } finally {
                 setLoading(false);
             }
@@ -67,13 +76,13 @@ const Enrollments = () => {
     }
 
     if (error) {
-        return <div>{error}</div>;
+        return <div className="error">{error}</div>;
     }
 
     return (
         <div className="syllabus-container">
             <div className="syllabus-header">
-                <h1>Syllabus</h1>
+                <h1>Enrollments</h1>
             </div>
             <table className="syllabus-table">
                 <thead>
